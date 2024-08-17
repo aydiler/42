@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   2_map_update.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/16 20:11:33 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/05/21 20:55:52 by adiler           ###   ########.fr       */
+/*   Created: 2024/08/18 00:28:24 by ubuntu            #+#    #+#             */
+/*   Updated: 2024/08/18 00:52:19 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 static void			read_map(t_game *game, int fd);
 static t_counter	start_counter(char *string_map, t_game *game);
 static void			count_elements(t_counter *cnt, char c);
-char 				*strjoinfree(char *s1, char *s2);
-
 
 void	init_map(t_game *game, char *path)
 {

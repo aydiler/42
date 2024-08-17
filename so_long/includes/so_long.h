@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 19:19:25 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/05/21 20:55:36 by adiler           ###   ########.fr       */
+/*   Updated: 2024/08/17 23:49:44 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "so_utils.h"
 
 # include "../libft/libft.h"
-# include "mlx.h"
+# include "../minilibx-linux/mlx.h"
 # include "get_next_line.h"
 
 # include <fcntl.h>//open, O_RDONLY

@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/16 20:11:53 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/05/21 19:40:38 by adiler           ###   ########.fr       */
+/*   Created: 2024/08/18 00:28:10 by ubuntu            #+#    #+#             */
+/*   Updated: 2024/08/18 00:28:13 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
-
 
 static void	init_game(t_game *game, char *path);
 static bool	is_ber_file(const char *argv);
@@ -56,8 +55,7 @@ static bool	is_ber_file(const char *argv)
 	return (false);
 }
 
-static void	init_hook(t_game *game, int event, \
-int mask, int (*f)())
+static void	init_hook(t_game *game, int event, int mask, int (*f)())
 {
 	mlx_hook(
 		game->window_pointer,

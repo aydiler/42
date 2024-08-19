@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 13:40:31 by adiler            #+#    #+#             */
-/*   Updated: 2024/05/21 18:22:05 by adiler           ###   ########.fr       */
+/*   Updated: 2024/08/19 17:29:35 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
+# define MAX_FD 1024
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include "so_long.h"
+# include "../libft/libft.h"
 
-typedef struct s_list_l
-{
-	char			*line;
-	struct s_list_l	*next;
-}	t_list_l;
 char	*get_next_line(int fd);
-char	*ft_strjoin_c(char const *s1, char const *s2);
-void	ft_lstadd_back_c(t_list_l **lst, t_list_l *new_node);
-void	handle_read_result(int result, t_list_l **head, char **line);
+void	handle_read_result(int result, t_list **fd_list, char **line);	
 
 #endif

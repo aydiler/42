@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 19:19:25 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/18 22:30:14 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 19:34:31 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 
 # include "so_utils.h"
 
-# include "../libft/libft.h"
-# include "../minilibx-linux/mlx.h"
-# include "get_next_line.h"
+# include "./libft/libft.h"
+# include "./minilibx-linux/mlx.h"
+# include "./get_next_line/get_next_line_bonus.h"
+# include "./printf/ft_printf.h"
 
 # include <fcntl.h>//open, O_RDONLY
 # include <unistd.h>//read, close, write

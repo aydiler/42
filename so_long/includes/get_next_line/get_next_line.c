@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 18:43:14 by adiler            #+#    #+#             */
-/*   Updated: 2024/05/21 20:01:05 by adiler           ###   ########.fr       */
+/*   Updated: 2024/08/19 17:32:25 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/get_next_line.h"
+#include "get_next_line.h"
 
-t_list_l	*create_new_node(char *buffer, int start, int len)
+t_list	*create_new_node(char *buffer, int start, int len)
 {
 	char	*line;
-	t_list_l	*new_node;
+	t_list	*new_node;
 	int		i;
 
 	line = malloc(sizeof(char) * (len + 1));
@@ -28,21 +28,21 @@ t_list_l	*create_new_node(char *buffer, int start, int len)
 		i++;
 	}
 	line[i] = 0;
-	new_node = malloc(sizeof(t_list_l));
+	new_node = malloc(sizeof(t_list));
 	if (!new_node)
 	{
 		free(line);
 		return (NULL);
 	}
-	new_node->line = line;
+	new_node->content = line;
 	new_node->next = NULL;
 	return (new_node);
 }
 
-t_list_l	*split_and_store_line(t_list_l **head, char *buffer)
+t_list	*split_and_store_line(t_list **head, char *buffer)
 {
 	size_t	i;
-	t_list_l	*new_node;
+	t_list	*new_node;
 	size_t	start;
 	size_t	len;
 
@@ -60,7 +60,7 @@ t_list_l	*split_and_store_line(t_list_l **head, char *buffer)
 			new_node = create_new_node(buffer, start, len);
 			if (!new_node)
 				return (NULL);
-			ft_lstadd_back_c(head, new_node);
+			ft_lstadd_back(head, new_node);
 		}
 		if (buffer[i])
 			i++;
@@ -68,7 +68,7 @@ t_list_l	*split_and_store_line(t_list_l **head, char *buffer)
 	return (new_node);
 }
 
-int	read_split_and_store_line(int fd, t_list_l **head)
+int	read_split_and_store_line(int fd, t_list **head)
 {
 	int		bytes_read;
 	char	*buf;
@@ -95,19 +95,19 @@ int	read_split_and_store_line(int fd, t_list_l **head)
 	return (bytes_read);
 }
 
-char	*pop_and_join(t_list_l **head, char *line)
+char	*pop_and_join(t_list **head, char *line)
 {
-	t_list_l	*first;
+	t_list	*first;
 	char	*temp_line;
 	char	*new_line;
 
 	if (head == NULL || *head == NULL)
 		return (line);
 	first = *head;
-	temp_line = first->line;
+	temp_line = first->content;
 	*head = first->next;
 	free(first);
-	new_line = ft_strjoin_c(line, temp_line);
+	new_line = ft_strjoin(line, temp_line);
 	free(line);
 	free(temp_line);
 	if (!new_line)
@@ -117,7 +117,7 @@ char	*pop_and_join(t_list_l **head, char *line)
 
 char	*get_next_line(int fd)
 {
-	static t_list_l	*head;
+	static t_list	*head;
 	char			*line;
 	int				read_result;
 
@@ -164,7 +164,7 @@ char	*get_next_line(int fd)
 // 		free(line);
 // 	}
 // }
-// void print_list_l(t_list_l *list) {
+// void print_list(t_list *list) {
 // 	while (list) {
 // 		printf("List Node:\n"); // Assuming each node has a 'line' member
 // 		print(list->line);

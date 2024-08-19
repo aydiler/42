@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 19:12:23 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/19 22:22:18 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/20 00:25:19 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,26 @@
 
 bool	is_surrounded_by_trees(t_game *game)
 {
-	int	i;
+	int	x;
+	int	y;
 
-	if (game->plot.map == NULL)
+	if (game->plot.map == NULL || \
+		game->plot.height < 3 || \
+		game->plot.length < 3)
 		return (false);
-	if (game->plot.height < 2 || game->plot.length < 2)
-		return (false);
-	i = 0;
-	while (i < game->plot.length - 1)
+	y = 0;
+	while (y < game->plot.height)
 	{
-		if (game->plot.map[0] == NULL || \
-			game->plot.map[game->plot.height - 1] == NULL)
-			return (false);
-		if (i < game->plot.height && (game->plot.map[i] == NULL || \
-			game->plot.map[i][0] == '\0' || \
-			game->plot.map[i][game->plot.length - 2] == '\0'))
-			return (false);
-		if (game->plot.map[0][i] != '1' ||
-			game->plot.map[game->plot.height - 1][i] != '1' ||
-			(i < game->plot.height && (game->plot.map[i][0] != '1' ||
-			game->plot.map[i][game->plot.length - 2] != '1')))
-			return (false);
-		i++;
+		x = 0;
+		while (x < game->plot.length)
+		{
+			if ((y == 0 || y == game->plot.height - 1 || \
+					x == 0 || x == game->plot.length - 1) && \
+				game->plot.map[y][x] != '1')
+				return (false);
+			x++;
+		}
+		y++;
 	}
 	return (true);
 }

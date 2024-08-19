@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 00:28:24 by ubuntu            #+#    #+#             */
-/*   Updated: 2024/08/19 22:31:09 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/20 00:25:55 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,11 @@ void	init_map(t_game *game, char *path)
 }
 
 static void	allocate_map_line(t_game *game, char ***map, \
-	int *height, char *line)
+				int *height, char *line)
 {
 	char	*new_line;
 
-	if (line[ft_strlen(line) - 1] != '\n')
-		new_line = ft_strjoin(line, "\n");
-	else
-		new_line = ft_strdup(line);
+	new_line = ft_strdup(line);
 	if (!new_line)
 		endgame("Memory allocation failed!", game, error);
 	*map = ft_realloc(*map, *height * sizeof(char *),
@@ -71,24 +68,26 @@ static void	allocate_map_line(t_game *game, char ***map, \
 static void	read_map_lines(t_game *game, int fd, char ***map, int *height)
 {
 	char	*line;
-	size_t	total_len;
+	size_t	max_len;
+	char	*newline;
 
-	total_len = 0;
+	max_len = 0;
 	*height = 0;
 	*map = NULL;
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
+		newline = ft_strchr(line, '\n');
+		if (newline)
+			*newline = '\0';
 		allocate_map_line(game, map, height, line);
-		total_len += ft_strlen((*map)[*height - 1]);
+		if (ft_strlen((*map)[*height - 1]) > max_len)
+			max_len = ft_strlen((*map)[*height - 1]);
 		line = get_next_line(fd);
 	}
 	if (*height == 0)
 		endgame("Error: No valid lines read from map file", game, error);
-	if (*height > 0)
-		game->plot.length = total_len / *height;
-	else
-		game->plot.length = 0;
+	game->plot.length = max_len;
 }
 
 static void	concatenate_map(t_game *game, char **map, int height)

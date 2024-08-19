@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 13:27:38 by adiler            #+#    #+#             */
-/*   Updated: 2023/11/27 12:03:47 by adiler           ###   ########.fr       */
+/*   Updated: 2024/08/19 22:57:08 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 			len2--;
 			little++;
 		}
-		if (*little == '\0') 
+		if (*little == '\0')
 			return ((char *)big);
 		big++;
 		len--;

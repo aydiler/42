@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   0_endgame.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 01:23:05 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/05/21 18:22:32 by adiler           ###   ########.fr       */
+/*   Updated: 2024/08/19 23:00:55 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
-
 
 void	destroy_image(t_game *game)
 {

@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 19:12:23 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/19 20:34:12 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 22:22:18 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,6 @@ bool	is_surrounded_by_trees(t_game *game)
 			return (false);
 		i++;
 	}
-	return (true);
-}
-
-bool	is_rectangular(t_game *game)
-{
-	if (game->plot.height == game->plot.length)
-		return (false);
 	return (true);
 }
 

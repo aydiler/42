@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 21:29:12 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/19 20:40:57 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 22:24:42 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static void	map_check_one(t_game *game, int y, int x)
 {
 	if (!is_surrounded_by_trees(game))
 		endgame("Not surrounded by trees!", game, map_char_error);
-	else if (!is_rectangular(game))
-		endgame("Map is not rectangular!", game, map_char_error);
+	else if (!are_collectibles_reachable(game))
+		endgame("Not all collectibles are reachable!", game, map_char_error);
 	else if (!is_valid_character(game, y, x))
 		endgame("Invalid character in map", game, map_char_error);
 	else

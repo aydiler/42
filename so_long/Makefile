@@ -18,7 +18,7 @@ SOURCE		= ./source/
 
 MAP = $(addprefix 0-map/, \
 	0_map.c 1_map_validation.c 2_map_update.c 3_map_utils.c \
-	4_map_render_player.c \
+	4_map_render_player.c 5_map_flood_fill.c\
 )
 
 WINDOW = $(addprefix 1-window/, \

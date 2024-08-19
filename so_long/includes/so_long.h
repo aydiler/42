@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 19:19:25 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/19 19:34:31 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 22:24:20 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,5 @@ char		*get_next_line(int fd);
 t_counter	start_counter(char *string_map, t_game *game);
 void		line_validation(char **map, t_game *game);
 void		count_elements(t_counter *cnt, char c);
+int			are_collectibles_reachable(t_game *game);
 #endif

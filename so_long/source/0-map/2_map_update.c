@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 00:28:24 by ubuntu            #+#    #+#             */
-/*   Updated: 2024/08/19 20:38:22 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 22:31:09 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ void	init_map(t_game *game, char *path)
 		free(line);
 		line = get_next_line(fd);
 	}
-	lseek(fd, 0, SEEK_SET);
+	close(fd);
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		exit(1);
 	read_map(game, fd);
 	line_validation(game->plot.map, game);
 	if (game->plot.map == NULL)

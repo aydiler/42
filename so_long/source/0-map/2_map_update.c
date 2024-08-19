@@ -6,15 +6,15 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 00:28:24 by ubuntu            #+#    #+#             */
-/*   Updated: 2024/08/18 22:48:49 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 15:27:06 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/so_long.h"
 
-static void			read_map(t_game *game, int fd);
-static void			allocate_map_line(t_game *game, char ***map,
-						int *height, char *line);
+static void	read_map(t_game *game, int fd);
+static void	allocate_map_line(t_game *game, char ***map,
+				int *height, char *line);
 
 void	init_map(t_game *game, char *path)
 {
@@ -37,25 +37,26 @@ static void	allocate_map_line(t_game *game, char ***map, \
 {
 	char	*new_line;
 
-	// Ensure the line ends with a newline
 	if (line[ft_strlen(line) - 1] != '\n')
 	{
 		new_line = ft_strjoin(line, "\n");
-		free(line);
 		if (!new_line)
 			endgame("Memory allocation failed!", game, error);
-		line = new_line;
 	}
-
-	// Reallocate the map array
-	*map = ft_realloc(*map, *height * sizeof(char *), \
-		(*height + 1) * sizeof(char *));
+	else
+	{
+		new_line = ft_strdup(line);
+		if (!new_line)
+			endgame("Memory allocation failed!", game, error);
+	}
+	*map = ft_realloc(*map, *height * sizeof(char *),
+			(*height + 2) * sizeof(char *));
 	if (!*map)
 		endgame("Memory allocation failed!", game, error);
-
-	// Add the new line
-	(*map)[*height] = line;
+	(*map)[*height] = new_line;
+	(*map)[*height + 1] = NULL;
 	(*height)++;
+	free(line);
 }
 
 static void	read_map_lines(t_game *game, int fd, char ***map, int *height)
@@ -68,7 +69,7 @@ static void	read_map_lines(t_game *game, int fd, char ***map, int *height)
 	while (line != NULL)
 	{
 		allocate_map_line(game, map, height, line);
-		total_len += ft_strlen(line);
+		total_len += ft_strlen((*map)[*height - 1]);
 		line = get_next_line(fd);
 	}
 	game->plot.length = total_len / *height;
@@ -95,7 +96,7 @@ static void	concatenate_map(t_game *game, char **map, int height)
 	free(string_map);
 }
 
-void	read_map(t_game *game, int fd)
+static void	read_map(t_game *game, int fd)
 {
 	char	**map;
 	int		height;

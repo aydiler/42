@@ -3,7 +3,6 @@ LIBFT_DIR = ../libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS = get_next_line_bonus.c get_next_line_utils_bonus.c
-
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
@@ -19,7 +18,7 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean

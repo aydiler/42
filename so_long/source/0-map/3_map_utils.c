@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 00:28:30 by ubuntu            #+#    #+#             */
-/*   Updated: 2024/08/19 20:02:11 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 20:48:52 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,38 +24,27 @@ t_counter	new_counter(void)
 	return (counter);
 }
 
-void line_validation(char **map, t_game *game)
+void	line_validation(char **map, t_game *game)
 {
-    int     i;
-    t_point point;
+	int		i;
+	t_point	point;
 
-    printf("Debug: Entering line_validation\n");
-
-    if (map == NULL || map[0] == NULL)
-    {
-        printf("Error: map is NULL or empty\n");
-        endgame("Invalid map: NULL or empty", game, error);
-    }
-
-    i = 0;
-    point.x = 0;
-    point.y = ft_strlen(map[0]);
-    while (map[i] != 0)
-    {
-        point.x = ft_strlen(map[i]);
-        printf("Line %d: '%s', length: %d\n", i, map[i], point.x);
-        if (point.x != point.y)
-        {
-            printf("Error: line %d length (%d) does not match expected length (%d)\n", i, point.x, point.y);
-            free_map(game);
-            endgame("Invalid file: lines are not the same size!", game, error);
-        }
-        i++;
-    }
-
-    printf("Debug: Exiting line_validation\n");
+	if (map == NULL || map[0] == NULL)
+		endgame("Invalid map: NULL or empty", game, error);
+	i = 0;
+	point.x = 0;
+	point.y = ft_strlen(map[0]);
+	while (map[i] != 0)
+	{
+		point.x = ft_strlen(map[i]);
+		if (point.x != point.y)
+		{
+			free_map(game);
+			endgame("Invalid file: lines are not the same size!", game, error);
+		}
+		i++;
+	}
 }
-
 
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 {

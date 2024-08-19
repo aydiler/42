@@ -6,63 +6,39 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 19:12:23 by anhigo-s          #+#    #+#             */
-/*   Updated: 2024/08/19 20:20:25 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 20:34:12 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/so_long.h"
 
-bool is_surrounded_by_trees(t_game *game)
+bool	is_surrounded_by_trees(t_game *game)
 {
-    int i;
+	int	i;
 
-    printf("Debug: Entering is_surrounded_by_trees\n");
-    printf("Debug: game->plot.height=%d, game->plot.length=%d\n", game->plot.height, game->plot.length);
-
-    if (game->plot.map == NULL)
-    {
-        printf("Error: game->plot.map is NULL\n");
-        return false;
-    }
-
-    if (game->plot.height < 2 || game->plot.length < 2)
-    {
-        printf("Error: Map dimensions are too small\n");
-        return false;
-    }
-
-    i = 0;
-    while (i < game->plot.length - 1)
-    {
-        printf("Debug: Checking row %d\n", i);
-
-        if (game->plot.map[0] == NULL || game->plot.map[game->plot.height - 1] == NULL)
-        {
-            printf("Error: NULL row in map\n");
-            return false;
-        }
-
-        if (i < game->plot.height && (game->plot.map[i] == NULL || game->plot.map[i][0] == '\0' || game->plot.map[i][game->plot.length - 2] == '\0'))
-        {
-            printf("Error: Invalid row %d\n", i);
-            return false;
-        }
-
-        if (game->plot.map[0][i] != '1' ||
-            game->plot.map[game->plot.height - 1][i] != '1' ||
-            (i < game->plot.height && (game->plot.map[i][0] != '1' ||
-            game->plot.map[i][game->plot.length - 2] != '1')))
-        {
-            printf("Error: Not surrounded by trees at position %d\n", i);
-            return false;
-        }
-        i++;
-    }
-
-    printf("Debug: Exiting is_surrounded_by_trees\n");
-    return true;
+	if (game->plot.map == NULL)
+		return (false);
+	if (game->plot.height < 2 || game->plot.length < 2)
+		return (false);
+	i = 0;
+	while (i < game->plot.length - 1)
+	{
+		if (game->plot.map[0] == NULL || \
+			game->plot.map[game->plot.height - 1] == NULL)
+			return (false);
+		if (i < game->plot.height && (game->plot.map[i] == NULL || \
+			game->plot.map[i][0] == '\0' || \
+			game->plot.map[i][game->plot.length - 2] == '\0'))
+			return (false);
+		if (game->plot.map[0][i] != '1' ||
+			game->plot.map[game->plot.height - 1][i] != '1' ||
+			(i < game->plot.height && (game->plot.map[i][0] != '1' ||
+			game->plot.map[i][game->plot.length - 2] != '1')))
+			return (false);
+		i++;
+	}
+	return (true);
 }
-
 
 bool	is_rectangular(t_game *game)
 {
@@ -79,10 +55,7 @@ bool	is_valid_character(t_game *game, int y, int x)
 	if (c == '\n')
 		return (true);
 	if (!(ft_strchr("01CEP", c)))
-	{
-		ft_printf("Invalid character: '%c' at position: y=%d, x=%d\n", c, y, x);
 		return (false);
-	}
 	return (true);
 }
 

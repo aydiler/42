@@ -6,7 +6,7 @@
 /*   By: ubuntu <ubuntu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 00:28:10 by ubuntu            #+#    #+#             */
-/*   Updated: 2024/08/19 20:09:33 by ubuntu           ###   ########.fr       */
+/*   Updated: 2024/08/19 20:27:18 by ubuntu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,45 +31,17 @@ int	main(int argc, char *argv[])
 	return (0);
 }
 
-static void init_game(t_game *game, char *path)
+static void	init_game(t_game *game, char *path)
 {
-    printf("Debug: Entering init_game\n");
-
-    printf("Debug: About to call init_map\n");
-    init_map(game, path);
-    printf("Debug: After init_map\n");
-
-    printf("Debug: game->plot.map=%p, game->plot.height=%d, game->plot.length=%d\n", 
-           (void*)game->plot.map, game->plot.height, game->plot.length);
-
-    // Print the first few lines of the map to verify its content
-    for (int i = 0; i < game->plot.height && i < 5; i++) {
-        printf("Debug: Map line %d: %s\n", i, game->plot.map[i]);
-    }
-
-    printf("Debug: About to call init_window\n");
-    init_window(game);
-    printf("Debug: After init_window\n");
-
-    printf("Debug: About to call init_images\n");
-    init_images(game);
-    printf("Debug: After init_images\n");
-
-    printf("Debug: About to call render_map\n");
-    render_map(game);
-    printf("Debug: After render_map\n");
-
-    printf("Debug: About to initialize hooks\n");
-    init_hook(game, KEY_RELEASE, KEY_RELEASE_MASK, key_check);
-    init_hook(game, DESTROY_NOTIFY, NO_EVENT_MASK, red_cross);
-    init_hook(game, EXPOSE, EXPOSURE_MASK, mini_maker);
-    printf("Debug: After initializing hooks\n");
-
-    printf("Debug: About to enter mlx_loop\n");
-    mlx_loop(game->mlx_pointer);
-    printf("Debug: After mlx_loop (this line should not be reached)\n");
+	init_map(game, path);
+	init_window(game);
+	init_images(game);
+	render_map(game);
+	init_hook(game, KEY_RELEASE, KEY_RELEASE_MASK, key_check);
+	init_hook(game, DESTROY_NOTIFY, NO_EVENT_MASK, red_cross);
+	init_hook(game, EXPOSE, EXPOSURE_MASK, mini_maker);
+	mlx_loop(game->mlx_pointer);
 }
-
 
 static bool	is_ber_file(const char *argv)
 {

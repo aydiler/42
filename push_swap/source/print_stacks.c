@@ -1,12 +1,12 @@
 #include "../includes/push_swap.h"
 
-static int	get_stack_size(t_stack *stack)
+static int	get_stack_size(t_list *stack)
 {
 	int		size;
 	t_list	*current;
 
 	size = 0;
-	current = stack->head;
+	current = stack;
 	while (current)
 	{
 		size++;
@@ -35,7 +35,7 @@ static void	print_element(t_list *current, int size, int i)
 	printf("%-4d", (int)(intptr_t)current->content);
 }
 
-void	print_stacks(t_stack *a, t_stack *b)
+void	print_stacks(t_list *a, t_list *b)
 {
 	int		size_a;
 	int		size_b;
@@ -48,8 +48,8 @@ void	print_stacks(t_stack *a, t_stack *b)
 	size_b = get_stack_size(b);
 	max_size = get_max_size(size_a, size_b);
 	printf("-------------------\n");
-	current_a = a->head;
-	current_b = b->head;
+	current_a = a;
+	current_b = b;
 	i = max_size - 1;
 	while (i >= 0)
 	{

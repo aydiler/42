@@ -1,15 +1,15 @@
 #include "../includes/push_swap.h"
 
-t_stack	*stack_a(void)
+t_list	**stack_a(void)
 {
-	static t_stack	stack;
+	static t_list	*stack = NULL;
 
 	return (&stack);
 }
 
-t_stack	*stack_b(void)
+t_list	**stack_b(void)
 {
-	static t_stack	stack;
+	static t_list	*stack = NULL;
 
 	return (&stack);
 }

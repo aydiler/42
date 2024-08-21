@@ -1,19 +1,18 @@
 #include "../includes/push_swap.h"
 
-void	free_stack(t_stack *stack)
+void	free_stack(t_list **stack)
 {
 	t_list	*current;
 	t_list	*next;
 
-	if (stack == NULL || stack->head == NULL)
+	if (stack == NULL || *stack == NULL)
 		return ;
-
-	current = stack->head;
+	current = *stack;
 	while (current != NULL)
 	{
 		next = current->next;
 		free(current);
 		current = next;
 	}
-	stack->head = NULL;
+	*stack = NULL;
 }

@@ -4,22 +4,17 @@
 # include "./libft/libft.h"
 # include "./printf/ft_printf.h"
 
-# include <fcntl.h>//open, O_RDONLY
-# include <unistd.h>//read, close, write
-# include <stdlib.h>//malloc
-# include <stdio.h>//printf
-# include <stdbool.h>//bool
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <stdbool.h>
 
-typedef struct s_stack
-{
-	t_list	*head;
-}	t_stack;
-
-t_stack		*stack_a(void);
-t_stack		*stack_b(void);
-void		free_stack(t_stack *stack);
+t_list		**stack_a(void);
+t_list		**stack_b(void);
+void		free_stack(t_list **stack);
 int			process_arguments(int argc, char **argv);
-void		print_stacks(t_stack *a, t_stack *b);
+void		print_stacks(t_list *a, t_list *b);
 void		ft_pa(void);
 void		ft_pb(void);
 void		ft_ra(void);
@@ -30,4 +25,5 @@ void		ft_rrb(void);
 void		ft_rrr(void);
 void		ft_sa(void);
 void		ft_sb(void);
+
 #endif

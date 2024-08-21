@@ -9,23 +9,22 @@ static int	ft_swap_elements(t_list **head)
 	if (!head || !(*head) || !(*head)->next)
 		return (1);
 	first = *head;
-	rest = (*head)->next->next;
 	second = (*head)->next;
+	rest = second->next;
 	*head = second;
 	second->next = first;
-	if (first->next)
-		first->next = rest;
+	first->next = rest;
 	return (0);
 }
 
 void	ft_sa(void)
 {
-	if (ft_swap_elements(&stack_a()->head) == 0)
+	if (ft_swap_elements(stack_a()) == 0)
 		ft_printf("sa\n");
 }
 
 void	ft_sb(void)
 {
-	if (ft_swap_elements(&stack_b()->head) == 0)
+	if (ft_swap_elements(stack_b()) == 0)
 		ft_printf("sb\n");
 }

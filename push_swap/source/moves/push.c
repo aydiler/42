@@ -5,7 +5,7 @@ static int	ft_push_element(t_list **head, t_list **target)
 	t_list	*current;
 	t_list	*temporary;
 
-	if (!*head || !*head)
+	if (!head || !*head)
 		return (1);
 	current = *head;
 	(*head) = (*head)->next;
@@ -23,28 +23,28 @@ static int	ft_push_element(t_list **head, t_list **target)
 
 void	ft_pa(void)
 {
-	t_stack	*a;
-	t_stack	*b;
+	t_list	**a;
+	t_list	**b;
 
 	a = stack_a();
 	b = stack_b();
-	if (a && b)
+	if (a && b && *b)
 	{
-		ft_push_element(&b->head, &a->head);
+		ft_push_element(b, a);
 		write(1, "pa\n", 3);
 	}
 }
 
 void	ft_pb(void)
 {
-	t_stack	*a;
-	t_stack	*b;
+	t_list	**a;
+	t_list	**b;
 
 	a = stack_a();
 	b = stack_b();
-	if (a && b)
+	if (a && b && *a)
 	{
-		ft_push_element(&a->head, &b->head);
+		ft_push_element(a, b);
 		write(1, "pb\n", 3);
 	}
 }

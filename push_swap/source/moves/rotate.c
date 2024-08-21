@@ -6,15 +6,15 @@ static void	ft_rotate(t_list **head)
 	t_list	*temp;
 	t_list	*cur;
 
-	temp = *head;
-	if (!head || !*head)
+	if (!head || !*head || !(*head)->next)
 		return ;
+	temp = *head;
 	*head = (*head)->next;
 	cur = *head;
 	while (cur->next)
 		cur = cur->next;
 	cur->next = temp;
-	cur->next->next = NULL;
+	temp->next = NULL;
 }
 
 void	ft_ra(void)

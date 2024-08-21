@@ -19,16 +19,12 @@ MOVES = $(addprefix moves/, \
 	swap.c \
 )
 
-SORTING = $(addprefix sorting/, \
-	\
-)
-
 STACK = $(addprefix stack/, \
 	build_stack.c declaration.c \
 )
 
 SRC = $(addprefix $(SOURCE), \
-	$(MOVES) $(SORTING) $(STACK) \
+	$(MOVES) $(STACK) \
 	free_stack.c \
 	push_swap.c \
 	print_stacks.c \

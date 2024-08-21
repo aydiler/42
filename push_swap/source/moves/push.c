@@ -1,3 +1,5 @@
+#include "../../includes/push_swap.h"
+
 static int	ft_push_element(t_list **head, t_list **target)
 {
 	t_list	*current;
@@ -21,12 +23,28 @@ static int	ft_push_element(t_list **head, t_list **target)
 
 void	ft_pa(void)
 {
-	ft_push_element(&stack_b()->head, &stack_a()->head);
-	write(1, "pa\n", 3);
+	t_stack	*a;
+	t_stack	*b;
+
+	a = stack_a();
+	b = stack_b();
+	if (a && b)
+	{
+		ft_push_element(&b->head, &a->head);
+		write(1, "pa\n", 3);
+	}
 }
 
 void	ft_pb(void)
 {
-	ft_push_element(&stack_a()->head, &stack_b()->head);
-	write(1, "pb\n", 3);
+	t_stack	*a;
+	t_stack	*b;
+
+	a = stack_a();
+	b = stack_b();
+	if (a && b)
+	{
+		ft_push_element(&a->head, &b->head);
+		write(1, "pb\n", 3);
+	}
 }

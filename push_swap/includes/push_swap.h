@@ -22,4 +22,12 @@ int			process_arguments(int argc, char **argv);
 void		print_stacks(t_stack *a, t_stack *b);
 void		ft_pa(void);
 void		ft_pb(void);
+void		ft_ra(void);
+void		ft_rb(void);
+void		ft_rr(void);
+void		ft_rra(void);
+void		ft_rrb(void);
+void		ft_rrr(void);
+void		ft_sa(void);
+void		ft_sb(void);
 #endif

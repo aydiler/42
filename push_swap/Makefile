@@ -14,6 +14,9 @@ SOURCE		= ./source/
 
 MOVES = $(addprefix moves/, \
 	push.c \
+	rotate.c \
+	reverse_rotate.c \
+	swap.c \
 )
 
 SORTING = $(addprefix sorting/, \

@@ -32,7 +32,7 @@ static void	print_element(t_list *current, int size, int i)
 		current = current->next;
 		j++;
 	}
-	printf("%-2d", (int)(intptr_t)current->content);
+	printf("%-4d", (int)(intptr_t)current->content);
 }
 
 void	print_stacks(t_stack *a, t_stack *b)
@@ -62,7 +62,7 @@ void	print_stacks(t_stack *a, t_stack *b)
 		printf("\n");
 		i--;
 	}
-	printf("_ _\n");
-	printf("a b\n");
+	printf("_   _\n");
+	printf("a   b\n");
 	printf("-------------------\n");
 }

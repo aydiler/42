@@ -7,8 +7,7 @@ void	print_map(t_map *map);
 void	calculate_isometric(t_map *map);
 void	draw_lines(t_map *map);
 void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_y, float zoom);
-
-
+void	terminate(char *message, t_map *map, int error_code);
 
 int main(int argc, char *argv[])
 {
@@ -86,7 +85,7 @@ void cleanup(t_map *map)
 
 void terminate(char *message, t_map *map, int error_code)
 {
-	printf(RED "Error\n%s\n" ENDC, message);
+	ft_printf("Error\n%s\n", message);
 	cleanup(map);
 	exit(error_code);
 }

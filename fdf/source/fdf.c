@@ -173,9 +173,9 @@ static int	allocate_points(t_map *map)
 }
 
 
-static void	fill_points(char *line, t_point *points)
+static void	fill_points(char *line, t_point *points, t_map *map)
 {
-	char	**split;
+	char	** split;
 	int		x;
 
 	split = ft_split(line, ' ');
@@ -187,11 +187,16 @@ static void	fill_points(char *line, t_point *points)
 		points[x].z = ft_atoi(split[x]);
 		points[x].iso_x = 0;
 		points[x].iso_y = 0;
+		if (points[x].z < map->min_z)
+			map->min_z = points[x].z;
+		if (points[x].z > map->max_z)
+			map->max_z = points[x].z;
 		free(split[x]);
 		x++;
 	}
 	free(split);
 }
+
 
 
 void	read_map(char *filename, t_map *map)
@@ -206,16 +211,19 @@ void	read_map(char *filename, t_map *map)
 	if (fd < 0)
 		terminate("Failed to open file", map, 1);
 	y = 0;
+	map->min_z = INT_MAX;
+	map->max_z = INT_MIN;
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
-		fill_points(line, map->points[y]);
+		fill_points(line, map->points[y], map);
 		free(line);
 		y++;
 		line = get_next_line(fd);
 	}
 	close(fd);
 }
+
 
 void	calculate_isometric(t_map *map)
 {
@@ -293,6 +301,27 @@ void	draw_lines(t_map *map)
 	}
 	ft_printf("Drawing completed\n");
 }
+int	get_color(double z, int min_z, int max_z)
+{
+	int	color;
+	int	range;
+
+	range = max_z - min_z;
+	if (z < min_z + range / 3)
+	{
+		color = 0xFFFFFF;  // White
+	}
+	else if (z < min_z + 2 * range / 3)
+	{
+		color = 0xFFB6C1;  // Light Pink
+	}
+	else
+	{
+		color = 0xFF69B4;  // Hot Pink
+	}
+	return (color);
+}
+
 
 
 void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_y, float zoom)
@@ -302,6 +331,8 @@ void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_
 	int		steps;
 	int		i;
 	int		color;
+	double	z_diff;
+	double	z_current;
 
 	dx = (end.iso_x - start.iso_x) * zoom;
 	dy = (end.iso_y - start.iso_y) * zoom;
@@ -310,10 +341,12 @@ void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_
 		return ;
 	dx = dx / steps;
 	dy = dy / steps;
-	color = 0xFFFFFF;
+	z_diff = end.z - start.z;
 	i = 0;
 	while (i <= steps)
 	{
+		z_current = start.z + (z_diff * i / steps);
+		color = get_color(z_current, map->min_z, map->max_z);
 		mlx_pixel_put(map->mlx_pointer, map->window_pointer,
 			offset_x + (int)(start.iso_x * zoom + dx * i),
 			offset_y + (int)(start.iso_y * zoom + dy * i),
@@ -321,3 +354,4 @@ void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_
 		i++;
 	}
 }
+

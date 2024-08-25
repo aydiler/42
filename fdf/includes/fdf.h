@@ -13,6 +13,7 @@
 # include <stdlib.h>//malloc
 # include <stdio.h>//printf
 # include <stdbool.h>//bool
+#include <limits.h>
 # include <math.h>
 
 #endif

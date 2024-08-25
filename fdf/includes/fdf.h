@@ -17,8 +17,8 @@
 # define ESC 65307
 # define ENDC "\033[0m"
 # define WINDOW_NAME "FDF"
-# define WINDOW_WIDTH 800
-# define WINDOW_HEIGHT 600
+# define WINDOW_WIDTH 1920
+# define WINDOW_HEIGHT 1080
 
 typedef struct s_point
 {

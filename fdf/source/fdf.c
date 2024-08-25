@@ -8,6 +8,7 @@ void	calculate_isometric(t_map *map);
 void	draw_lines(t_map *map);
 void	draw_line(t_map *map, t_point start, t_point end, int offset_x, int offset_y, float zoom);
 void	terminate(char *message, t_map *map, int error_code);
+int resize_window(t_map *map);
 
 int main(int argc, char *argv[])
 {
@@ -27,12 +28,12 @@ int main(int argc, char *argv[])
 
 	init_window(&map);
 	read_map(argv[1], &map);
-	ft_printf("width: %d, height: %d\n", map.width, map.height);
-	ft_printf("Printing map before converting points to isometric\n");
-	print_map(&map);
+	// ft_printf("width: %d, height: %d\n", map.width, map.height);
+	// ft_printf("Printing map before converting points to isometric\n");
+	// print_map(&map);
 	calculate_isometric(&map);
-	ft_printf("Printing map after converting points to isometric\n");
-	print_map(&map);
+	// ft_printf("Printing map after converting points to isometric\n");
+	// print_map(&map);
 	draw_lines(&map);
 	mlx_loop(map.mlx_pointer);
 
@@ -51,6 +52,13 @@ void init_window(t_map *map)
 
 	mlx_key_hook(map->window_pointer, key_hook, map);
 	mlx_hook(map->window_pointer, 17, 1L<<17, close_window, map);
+	mlx_hook(map->window_pointer, 25, 1L<<18, resize_window, map);
+}
+
+int resize_window(t_map *map)
+{
+    draw_lines(map);
+    return (0);
 }
 
 void	free_map_points(t_map *map)
@@ -278,7 +286,7 @@ void	draw_lines(t_map *map)
 	int		offset_y;
 	float	zoom;
 
-	zoom = 20.0;  // Adjust this value to zoom in or out
+	zoom = 15.0;
 	offset_x = WINDOW_WIDTH / 2 - (int)((map->width / 2) * zoom);
 	offset_y = WINDOW_HEIGHT / 2 - (int)((map->height / 2) * zoom);
 	
@@ -298,7 +306,6 @@ void	draw_lines(t_map *map)
 		}
 		y++;
 	}
-	ft_printf("Drawing completed\n");
 }
 int	get_color(double z, int min_z, int max_z)
 {

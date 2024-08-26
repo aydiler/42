@@ -18,7 +18,7 @@ INCLUDES	= -I./includes \
 SOURCE		= ./source/
 
 SRC = $(addprefix $(SOURCE), \
-    fdf.c \
+    fdf.c draw_map.c initialize_window.c read_map.c \
 )
 
 OBJ = $(SRC:%.c=%.o)

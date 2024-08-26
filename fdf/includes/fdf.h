@@ -27,6 +27,14 @@ typedef struct s_point
 	double	iso_y;
 }	t_point;
 
+typedef struct s_line
+{
+	double	dx;
+	double	dy;
+	int		steps;
+	double	z_diff;
+}	t_line;
+
 typedef struct s_map
 {
 	void	*mlx_pointer;
@@ -36,8 +44,16 @@ typedef struct s_map
 	t_point	**points;
 	int		min_z;
 	int		max_z;
+	int		offset_x;
+	int		offset_y;
+	float	zoom;
 }	t_map;
 
 void	init_window(t_map *map);
+void	read_map(char *filename, t_map *map);
+void	draw_lines(t_map *map);
+void	terminate(char *message, t_map *map, int error_code);
+void	cleanup(t_map *map);
+void	calculate_isometric(t_map *map);
 
 #endif

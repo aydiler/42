@@ -1,8 +1,8 @@
 #include "../includes/pipex.h"
 
-void free_args(char **args)
+void	free_args(char **args)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (args[i])

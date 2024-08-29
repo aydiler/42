@@ -1,18 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <string.h>
-#include <fcntl.h>
 #include "../includes/pipex.h"
 
-void error_exit(const char *function_name)
+void	error_exit(const char *function_name)
 {
 	perror(function_name);
 	exit(EXIT_FAILURE);
 }
 
-void	execute_command(char *command, char ** envp)
+void	execute_command(char *command, char **envp)
 {
 	char	*full_path;
 	char	**args;
@@ -30,7 +24,8 @@ void	execute_command(char *command, char ** envp)
 		error_exit("execve");
 }
 
-void	child_process(int *pipefd, char *command, char *output_file, char **envp)
+void	child_process(int *pipefd, char *command, \
+	char *output_file, char **envp)
 {
 	int	fd;
 
@@ -47,7 +42,8 @@ void	child_process(int *pipefd, char *command, char *output_file, char **envp)
 	execute_command(command, envp);
 }
 
-void	parent_process(int *pipefd, char *input_file, char *command, char **envp)
+void	parent_process(int *pipefd, char *input_file, \
+	char *command, char **envp)
 {
 	int		fd;
 
@@ -64,7 +60,7 @@ void	parent_process(int *pipefd, char *input_file, char *command, char **envp)
 	execute_command(command, envp);
 }
 
-int	main(int argc, char **argv, char ** envp)
+int	main(int argc, char **argv, char **envp)
 {
 	int		pipefd[2];
 	pid_t	pid;

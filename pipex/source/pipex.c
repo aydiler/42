@@ -6,93 +6,10 @@
 #include <fcntl.h>
 #include "../includes/pipex.h"
 
-#define BUFFER_SIZE 4096
-
-int error_return(const char *function_name, int error_code)
-{
-    perror(function_name);
-    return error_code;
-}
-
 void error_exit(const char *function_name)
 {
 	perror(function_name);
 	exit(EXIT_FAILURE);
-}
-
-void free_args(char **args)
-{
-    for (int i = 0; args[i]; i++)
-        free(args[i]);
-    free(args);
-}
-
-static char	*get_path(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
-	return (NULL);
-}
-
-char *extract_dir(char *next_dir, char *path)
-{
-    char *dir;
-
-    if (next_dir)
-    {
-        dir = ft_substr(path, 0, next_dir - path);
-        if (!dir)
-            error_exit("ft_substr");
-    }
-    else
-    {
-        dir = ft_strdup(path);
-        if (!dir)
-            error_exit("ft_strdup");
-    }
-    return dir;
-}
-
-static char	*find_command_path(const char *command, char **envp)
-{
-	char	*path;
-	char	*dir;
-	char	*next_dir;
-	char	*full_path;
-	char	*temp;
-
-	path = get_path(envp);
-	if (!path)
-		return (NULL);
-	while (*path)
-	{
-		next_dir = ft_strchr(path, ':');
-		dir = extract_dir(next_dir, path);
-		if (!dir)
-			return (NULL);
-		temp = ft_strjoin(dir, "/");
-		free(dir);
-		if (!temp)
-			return (NULL);
-		full_path = ft_strjoin(temp, command);
-		free(temp);
-		if (!full_path)
-			return (NULL);
-		if (access(full_path, F_OK | X_OK) == 0)
-			return (full_path);
-		free(full_path);
-		if (!next_dir)
-			break;
-		path = next_dir + 1;
-	}
-	return (NULL);
 }
 
 void	execute_command(char *command, char ** envp)
@@ -110,60 +27,51 @@ void	execute_command(char *command, char ** envp)
 		error_exit("command not found");
 	}
 	if (execve(full_path, args, envp) == -1)
-	{
-		free(full_path);
-		free_args(args);
 		error_exit("execve");
-	}	
-	free(full_path);
-	free_args(args);
-	exit(EXIT_FAILURE);
 }
 
-void child_process(int *pipefd, char **envp, char *command)
+void	child_process(int *pipefd, char *command, char *output_file, char **envp)
 {
-    int status;
+	int	fd;
 
-    close(pipefd[1]);
-    if (dup2(pipefd[0], STDIN_FILENO) == -1)
-		error_exit("dup2");			
-    close(pipefd[0]);
-    execute_command(command, envp);
-    exit(EXIT_FAILURE);
+	close(pipefd[1]);
+	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		error_exit("dup2");
+	close(pipefd[0]);
+	fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+		error_exit("open");
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		error_exit("dup2");
+	close(fd);
+	execute_command(command, envp);
 }
 
-void	parent_process(int *pipefd, char *input_file)
+void	parent_process(int *pipefd, char *input_file, char *command, char **envp)
 {
 	int		fd;
-	char	buffer[BUFFER_SIZE];
-	ssize_t	bytes_read;
 
-	close(pipefd[0]);
 	fd = open(input_file, O_RDONLY);
 	if (fd == -1)
-	{
-		perror("open");
-		close(pipefd[1]);
-		return ;
-	}
-	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
-	{
-		if (write(pipefd[1], buffer, bytes_read) == -1)
-			break ;
-	}
+		error_exit("open");
+	if (dup2(fd, STDIN_FILENO) == -1)
+		error_exit("dup2");
 	close(fd);
+	close(pipefd[0]);
+	if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+		error_exit("dup2");
 	close(pipefd[1]);
+	execute_command(command, envp);
 }
 
 int	main(int argc, char **argv, char ** envp)
 {
 	int		pipefd[2];
 	pid_t	pid;
-	char	*command;
 
-	if (argc != 2)
+	if (argc != 5)
 	{
-		ft_putstr_fd("Usage: pipex file\n", STDERR_FILENO);
+		ft_putstr_fd("Usage: ./pipex file1 cmd1 cmd2 file2\n", STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
 	if (pipe(pipefd) == -1)
@@ -171,13 +79,12 @@ int	main(int argc, char **argv, char ** envp)
 	pid = fork();
 	if (pid == -1)
 		error_exit("fork");
-		
-	command = "wcWW -w";
 	if (pid == 0)
-		child_process(pipefd, envp, command);
+		child_process(pipefd, argv[3], argv[4], envp);
 	else
 	{
-		parent_process(pipefd, argv[1]);
+		parent_process(pipefd, argv[1], argv[2], envp);
 		waitpid(pid, NULL, 0);
 	}
+	return (0);
 }

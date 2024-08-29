@@ -1,4 +1,4 @@
-NAME		=fdf
+NAME		= pipex
 
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror

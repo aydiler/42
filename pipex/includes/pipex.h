@@ -11,4 +11,7 @@
 # include <fcntl.h>  
 # include <stdlib.h>
 
+char	*find_command_path(const char *command, char **envp);
+void	free_args(char **args);
+
 #endif

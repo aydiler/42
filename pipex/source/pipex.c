@@ -8,6 +8,13 @@
 
 #define BUFFER_SIZE 4096
 
+void free_args(char **args)
+{
+    for (int i = 0; args[i]; i++)
+        free(args[i]);
+    free(args);
+}
+
 static char	*get_path(char **envp)
 {
 	int	i;
@@ -22,177 +29,170 @@ static char	*get_path(char **envp)
 	return (NULL);
 }
 
-void error_exit(const char *function_name)
+char *extract_dir(char *next_dir, char *path)
 {
-    perror(function_name);
-    exit(1);
-}
-char	*extract_dir(char *next_dir, char *path)
-{
-	char	*dir;
+    char *dir;
 
-	if (next_dir)
-	{
-		dir = ft_substr(path, 0, next_dir - path);
-		if (!dir)
-			error_exit("ft_substr");
-	}
-	else
-	{
-		dir = ft_strdup(path);
-		if (!dir)
-			error_exit("ft_strdup");
-	}
-	return (dir);
+    if (next_dir)
+    {
+        dir = ft_substr(path, 0, next_dir - path);
+        if (!dir)
+            return (NULL);
+    }
+    else
+    {
+        dir = ft_strdup(path);
+        if (!dir)
+            return (NULL);
+    }
+    return dir;
 }
 
-static char	*join_and_check_path(const char *dir, const char *command)
-{
-	char	*full_path;
-
-	full_path = ft_strjoin(dir, command);
-	if (!full_path)
-		return (NULL);
-	if (access(full_path, X_OK) == 0)
-		return (full_path);
-	free(full_path);
-	return (NULL);
-}
-
-static char	*search_in_dir(char **path, const char *command)
-{
-	char	*dir;
-	char	*next_dir;
-	char	*result;
-
-	next_dir = ft_strchr(*path, ':');
-	dir = extract_dir(next_dir, *path);
-	if (!dir)
-		return (NULL);
-	result = join_and_check_path(dir, command);
-	free(dir);
-	if (result)
-		return (result);
-	if (!next_dir)
-		*path = NULL;
-	else
-		*path = next_dir + 1;
-	return (NULL);
-}
-
-static char	*find_command_path(const char *command, char **envp)
-{
-	char	*path;
-	char	*result;
-
-	path = get_path(envp);
-	if (!path)
-		return (NULL);
-	while (path && *path)
-	{
-		result = search_in_dir(&path, command);
-		if (result)
-			return (result);
-	}
-	return (NULL);
-}
-
-char **split_command(const char *command)
-{
-    char **args = ft_split(command, ' ');
-    if (!args)
-        error_exit("ft_split");
-    return args;
-}
-
-void free_args(char **args)
-{
-    for (int i = 0; args[i]; i++)
-        free(args[i]);
-    free(args);
-}
-
-void execute_command(char *command, char **envp)
+static char *join_and_check_path(const char *dir, const char *command)
 {
     char *full_path;
-    char *command_with_slash;
-	char **args;
+    char *temp;
 
-	args = split_command(command);
-    command_with_slash = ft_strjoin("/", args[0]);
-    if (!command_with_slash)
+    temp = ft_strjoin(dir, "/");
+    if (!temp)
+        return (NULL);
+    full_path = ft_strjoin(temp, command);
+    free(temp);
+    if (!full_path)
+        return (NULL);
+    if (access(full_path, X_OK) == 0)
+        return (full_path);
+    free(full_path);
+    return (NULL);
+}
+
+static char *find_command_path(const char *command, char **envp)
+{
+    char *path;
+    char *dir;
+    char *next_dir;
+    char *result;
+
+    path = get_path(envp);
+    while (path && *path)
     {
-        free_args(args);
-        error_exit("ft_strjoin");
+        next_dir = ft_strchr(path, ':');
+        dir = extract_dir(next_dir, path);
+        if (!dir)
+            return (NULL);
+        result = join_and_check_path(dir, command);
+        free(dir);
+        if (result)
+            return (result);
+		if (!next_dir)
+			break ;
+        path = next_dir + 1;
     }
-    full_path = find_command_path(command_with_slash, envp);
-    free(command_with_slash);
+    return (NULL);
+}
+
+int error_return(const char *function_name, int error_code)
+{
+    perror(function_name);
+    return error_code;
+}
+
+int execute_command(char *command, char **envp)
+{
+    char *full_path;
+    char ** args;
+
+    args = ft_split(command, ' ');
+    if (!args)
+        return (error_return("split_command", EXIT_FAILURE));
+    full_path = find_command_path(args[0], envp);
     if (!full_path)
     {
         ft_putstr_fd("Command not found: ", 2);
         ft_putendl_fd(args[0], 2);
         free_args(args);
-        exit(1);
+        return (127);  // Return "command not found" status
     }
+    
     execve(full_path, args, envp);
-    perror("execve");
+    
+    // If execve returns, it means it failed
     free(full_path);
     free_args(args);
-    exit(1);
-}
-
-void parent_process(int *pipefd, char **argv, char **envp)
-{
-	int fd;
-	char buffer[BUFFER_SIZE];
-	ssize_t bytes_read;
-
-	close(pipefd[0]);
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1) {
-		perror("open");
-		exit(1);
-	}
-	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0) {
-		write(pipefd[1], buffer, bytes_read);
-	}
-	close(fd);
-	close(pipefd[1]);
-	wait(NULL);
+    return (error_return("execve", 126));  // Return "command invocation failed" status
 }
 
 void child_process(int *pipefd, char **envp, char *command)
 {
+    int status;
+
     close(pipefd[1]);
-    dup2(pipefd[0], 0);
+    if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	{
+		    perror("dup2");
+    		exit(EXIT_FAILURE);
+	}
     close(pipefd[0]);
-    
-    execute_command(command, envp);
-    exit(1);
+    status = execute_command(command, envp);
+    exit(status);
 }
 
-int main(int argc, char **argv, char **envp)
+int parent_process(int *pipefd, char *input_file, pid_t child_pid)
 {
-	int pipefd[2];
-	pid_t pid;
+    int     fd;
+    char    buffer[BUFFER_SIZE];
+    ssize_t bytes_read;
+    int     status;
 
-	if (pipe(pipefd) == -1) {
-		perror("pipe");
-		exit(1);
-	}
-	if (argc != 2) {
-		ft_putendl_fd("Usage: pipex file", 2);
-		exit(1);
-	}
-	pid = fork();
-	if (pid == -1) {
-		perror("fork");
-		exit(1);
-	}
-	char *command = "wc -w";
-	if (pid > 0) {
-		parent_process(pipefd, argv, envp);
-	} else {
-		child_process(pipefd, envp, command);
-	}
+    close(pipefd[0]);
+    fd = open(input_file, O_RDONLY);
+    if (fd == -1)
+    {
+        perror("open");
+        close(pipefd[1]);
+        waitpid(child_pid, NULL, 0);
+        return (EXIT_FAILURE);
+    }
+
+    while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
+    {
+        if (write(pipefd[1], buffer, bytes_read) == -1)
+        {
+            perror("write");
+            break;
+        }
+    }
+
+    close(fd);
+    close(pipefd[1]);
+    waitpid(child_pid, &status, 0);
+    if (WIFEXITED(status))
+        return (WEXITSTATUS(status));
+    return (EXIT_FAILURE);
+}
+
+int main(int argc, char ** argv, char **envp)
+{
+    int     pipefd[2];
+    pid_t   pid;
+    char    *command;
+
+    if (argc != 2)
+    {
+        ft_putendl_fd("Usage: pipex file", 2);
+        return (EXIT_FAILURE);
+    }
+
+    if (pipe(pipefd) == -1)
+        return (error_return("pipe", EXIT_FAILURE));
+
+    pid = fork();
+    if (pid == -1)
+        return (error_return("fork", EXIT_FAILURE));
+
+    command = "wcWW -w";
+    if (pid == 0)
+        child_process(pipefd, envp, command);
+    else
+        return (parent_process(pipefd, argv[1], pid));
 }

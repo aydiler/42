@@ -8,6 +8,18 @@
 
 #define BUFFER_SIZE 4096
 
+int error_return(const char *function_name, int error_code)
+{
+    perror(function_name);
+    return error_code;
+}
+
+void error_exit(const char *function_name)
+{
+	perror(function_name);
+	exit(EXIT_FAILURE);
+}
+
 void free_args(char **args)
 {
     for (int i = 0; args[i]; i++)
@@ -37,89 +49,75 @@ char *extract_dir(char *next_dir, char *path)
     {
         dir = ft_substr(path, 0, next_dir - path);
         if (!dir)
-            return (NULL);
+            error_exit("ft_substr");
     }
     else
     {
         dir = ft_strdup(path);
         if (!dir)
-            return (NULL);
+            error_exit("ft_strdup");
     }
     return dir;
 }
 
-static char *join_and_check_path(const char *dir, const char *command)
+static char	*find_command_path(const char *command, char **envp)
 {
-    char *full_path;
-    char *temp;
+	char	*path;
+	char	*dir;
+	char	*next_dir;
+	char	*full_path;
+	char	*temp;
 
-    temp = ft_strjoin(dir, "/");
-    if (!temp)
-        return (NULL);
-    full_path = ft_strjoin(temp, command);
-    free(temp);
-    if (!full_path)
-        return (NULL);
-    if (access(full_path, X_OK) == 0)
-        return (full_path);
-    free(full_path);
-    return (NULL);
-}
-
-static char *find_command_path(const char *command, char **envp)
-{
-    char *path;
-    char *dir;
-    char *next_dir;
-    char *result;
-
-    path = get_path(envp);
-    while (path && *path)
-    {
-        next_dir = ft_strchr(path, ':');
-        dir = extract_dir(next_dir, path);
-        if (!dir)
-            return (NULL);
-        result = join_and_check_path(dir, command);
-        free(dir);
-        if (result)
-            return (result);
+	path = get_path(envp);
+	if (!path)
+		return (NULL);
+	while (*path)
+	{
+		next_dir = ft_strchr(path, ':');
+		dir = extract_dir(next_dir, path);
+		if (!dir)
+			return (NULL);
+		temp = ft_strjoin(dir, "/");
+		free(dir);
+		if (!temp)
+			return (NULL);
+		full_path = ft_strjoin(temp, command);
+		free(temp);
+		if (!full_path)
+			return (NULL);
+		if (access(full_path, F_OK | X_OK) == 0)
+			return (full_path);
+		free(full_path);
 		if (!next_dir)
-			break ;
-        path = next_dir + 1;
-    }
-    return (NULL);
+			break;
+		path = next_dir + 1;
+	}
+	return (NULL);
 }
 
-int error_return(const char *function_name, int error_code)
+void	execute_command(char *command, char ** envp)
 {
-    perror(function_name);
-    return error_code;
-}
+	char	*full_path;
+	char	**args;
 
-int execute_command(char *command, char **envp)
-{
-    char *full_path;
-    char ** args;
-
-    args = ft_split(command, ' ');
-    if (!args)
-        return (error_return("split_command", EXIT_FAILURE));
-    full_path = find_command_path(args[0], envp);
-    if (!full_path)
-    {
-        ft_putstr_fd("Command not found: ", 2);
-        ft_putendl_fd(args[0], 2);
-        free_args(args);
-        return (127);  // Return "command not found" status
-    }
-    
-    execve(full_path, args, envp);
-    
-    // If execve returns, it means it failed
-    free(full_path);
-    free_args(args);
-    return (error_return("execve", 126));  // Return "command invocation failed" status
+	args = ft_split(command, ' ');
+	if (!args)
+		error_exit("ft_split");
+	full_path = find_command_path(args[0], envp);
+	if (!full_path)
+	{
+		free_args(args);
+		error_exit("command not found");
+	}
+	if (execve(full_path, args, envp) == -1)
+	{
+		free(full_path);
+		free_args(args);
+		error_exit("execve");
+	}	
+	free(full_path);
+	free_args(args);
+	exit(EXIT_FAILURE);
 }
 
 void child_process(int *pipefd, char **envp, char *command)
@@ -128,71 +126,58 @@ void child_process(int *pipefd, char **envp, char *command)
 
     close(pipefd[1]);
     if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		error_exit("dup2");			
+    close(pipefd[0]);
+    execute_command(command, envp);
+    exit(EXIT_FAILURE);
+}
+
+void	parent_process(int *pipefd, char *input_file)
+{
+	int		fd;
+	char	buffer[BUFFER_SIZE];
+	ssize_t	bytes_read;
+
+	close(pipefd[0]);
+	fd = open(input_file, O_RDONLY);
+	if (fd == -1)
 	{
-		    perror("dup2");
-    		exit(EXIT_FAILURE);
+		perror("open");
+		close(pipefd[1]);
+		return ;
 	}
-    close(pipefd[0]);
-    status = execute_command(command, envp);
-    exit(status);
+	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
+	{
+		if (write(pipefd[1], buffer, bytes_read) == -1)
+			break ;
+	}
+	close(fd);
+	close(pipefd[1]);
 }
 
-int parent_process(int *pipefd, char *input_file, pid_t child_pid)
+int	main(int argc, char **argv, char ** envp)
 {
-    int     fd;
-    char    buffer[BUFFER_SIZE];
-    ssize_t bytes_read;
-    int     status;
+	int		pipefd[2];
+	pid_t	pid;
+	char	*command;
 
-    close(pipefd[0]);
-    fd = open(input_file, O_RDONLY);
-    if (fd == -1)
-    {
-        perror("open");
-        close(pipefd[1]);
-        waitpid(child_pid, NULL, 0);
-        return (EXIT_FAILURE);
-    }
-
-    while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
-    {
-        if (write(pipefd[1], buffer, bytes_read) == -1)
-        {
-            perror("write");
-            break;
-        }
-    }
-
-    close(fd);
-    close(pipefd[1]);
-    waitpid(child_pid, &status, 0);
-    if (WIFEXITED(status))
-        return (WEXITSTATUS(status));
-    return (EXIT_FAILURE);
-}
-
-int main(int argc, char ** argv, char **envp)
-{
-    int     pipefd[2];
-    pid_t   pid;
-    char    *command;
-
-    if (argc != 2)
-    {
-        ft_putendl_fd("Usage: pipex file", 2);
-        return (EXIT_FAILURE);
-    }
-
-    if (pipe(pipefd) == -1)
-        return (error_return("pipe", EXIT_FAILURE));
-
-    pid = fork();
-    if (pid == -1)
-        return (error_return("fork", EXIT_FAILURE));
-
-    command = "wcWW -w";
-    if (pid == 0)
-        child_process(pipefd, envp, command);
-    else
-        return (parent_process(pipefd, argv[1], pid));
+	if (argc != 2)
+	{
+		ft_putstr_fd("Usage: pipex file\n", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	if (pipe(pipefd) == -1)
+		error_exit("pipe");
+	pid = fork();
+	if (pid == -1)
+		error_exit("fork");
+		
+	command = "wcWW -w";
+	if (pid == 0)
+		child_process(pipefd, envp, command);
+	else
+	{
+		parent_process(pipefd, argv[1]);
+		waitpid(pid, NULL, 0);
+	}
 }

@@ -67,7 +67,7 @@ void	calculate_isometric(t_map *map)
 	double	angle;
 	double	z_scale;
 
-	angle = 0.523599;
+	angle = 0.40;
 	z_scale = 0.1;
 	y = 0;
 	while (y < map->height)

@@ -4,8 +4,8 @@ CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 
 LIBS		= -L./includes/minilibx-linux -lmlx -lXext -lX11 \
-			  -L./includes/libft -lft \
 			  -L./includes/printf -lprintf \
+			  -L./includes/libft -lft \
 			  -lm
 
 INCLUDES	= -I./includes \
@@ -21,6 +21,8 @@ SRC = $(addprefix $(SOURCE), \
 
 OBJ = $(SRC:%.c=%.o)
 
+DEPS = includes/fractol.h
+
 all: libft printf minilibx $(NAME)
 
 libft:
@@ -32,7 +34,7 @@ printf:
 minilibx:
 	make -C ./includes/minilibx-linux
 
-%.o: %.c
+%.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) $(INCLUDES) -g -c $< -o $(<:%.c=%.o)
 
 $(NAME): $(OBJ)

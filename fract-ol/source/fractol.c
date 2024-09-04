@@ -42,6 +42,31 @@ void	put_color_to_pixel(t_fractal *fractal, int x, int y, int color)
 	buffer[(y * fractal->size_line / 4) + x] = color;
 }
 
+/*
+Mandelbrot set algebraically:
+z = z^2 + c
+ = (a+bi)^2 + (c+di)
+ = a^2 + 2abi - b^2 + c + di
+ = a^2 - b^2 + c + (2ab + d)i
+ = z_real + z_imaginary
+z_real = a^2 - b^2 + c
+z_imaginary = (2ab + d)i
+
+Mandelbrot set geometrically:
+z_real: zx = zx^2 - zy^2 + cx
+z_imaginary: zy = 2 * zx * zy + cy
+
+
+Escape condition algebraically:
+|z| < 2
+|a + bi| < 2
+sqrt(a^2 + b^2) < 2
+a^2 + b^2 < 4
+
+Escape condition geometrically:
+zx^2 + zy^2 < 4
+*/
+
 void	calculate_mandelbrot(t_fractal *fractal)
 {
 	int		i;

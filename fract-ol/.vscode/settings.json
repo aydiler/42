@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"main,c": "c",
-		"ft_printf.h": "c"
+		"ft_printf.h": "c",
+		"fractol.h": "c"
 	}
 }

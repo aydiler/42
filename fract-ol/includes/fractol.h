@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fractol.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/04 17:17:01 by adiler            #+#    #+#             */
+/*   Updated: 2024/09/04 19:05:46 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
@@ -43,6 +55,24 @@ typedef struct s_fractal
 	double	zoom;
 	char	*name;
 	int		max_iterations;
+	char    **argv;
+    int     argc;
 }			t_fractal;
+
+void	init_fractal(t_fractal *fractal);
+void	init_mlx(t_fractal *fractal);
+int		exit_fractal(t_fractal *fractal);
+void	put_color_to_pixel(t_fractal *fractal, int x, int y, int color);
+void	zoom(t_fractal *fractal, int x, int y, int zoom);
+void	draw_mandelbrot(t_fractal *fractal);
+void	calculate_mandelbrot(t_fractal *fractal);
+void	draw_julia(t_fractal *fractal);
+void	calculate_julia(t_fractal *fractal);
+double	ft_atof(const char *str);
+void	print_usage(void);
+void	draw_fractal(t_fractal *fractal);
+int		key_hook(int key_code, t_fractal *fractal);
+int		mouse_hook(int mouse_code, int x, int y, t_fractal *fractal);
+double ft_atof(const char *str);
 
 #endif

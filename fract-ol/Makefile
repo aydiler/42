@@ -16,7 +16,7 @@ INCLUDES	= -I./includes \
 SOURCE		= ./source/
 
 SRC = $(addprefix $(SOURCE), \
-    fractol.c  \
+    fractol.c fractol_utils.c hooks.c \
 )
 
 OBJ = $(SRC:%.c=%.o)

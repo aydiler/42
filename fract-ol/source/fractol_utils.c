@@ -52,51 +52,15 @@ void	put_color_to_pixel(t_fractal *fractal, int x, int y, int color)
 	buffer[(y * fractal->size_line / 4) + x] = color;
 }
 
-void draw_fractal(t_fractal *fractal)
+void	print_usage(void)
 {
-    if (ft_strncmp(fractal->name, "mandelbrot", 10) == 0)
-    {
-        draw_mandelbrot(fractal);
-    }
-    else if (ft_strncmp(fractal->name, "julia", 5) == 0)
-    {
-        draw_julia(fractal);
-    }
-	mlx_put_image_to_window(fractal->mlx, fractal->window, fractal->image, 0, 0);
-
-}
-
-double ft_atof(const char *str)
-{
-	double result = 0.0;
-	double factor = 1.0;
-	int sign = 1;
-	int decimal_seen = 0;
-
-	if (*str == '-')
-	{
-		sign = -1;
-		str++;
-	}
-	else if (*str == '+')
-		str++;
-	while (*str)
-	{
-		if (*str >= '0' && *str <= '9')
-		{
-			if (decimal_seen)
-			{
-				factor *= 0.1;
-				result += (*str - '0') * factor;
-			}
-			else
-				result = result * 10.0 + (*str - '0');
-		}
-		else if (*str == '.' && !decimal_seen)
-			decimal_seen = 1;
-		else
-			return 0.0;
-		str++;
-	}
-	return sign * result;
+	ft_putendl_fd("Usage:\n", 1);
+	ft_putendl_fd("./fractol mandelbrot\n", 1);
+	ft_putendl_fd("./fractol burningship\n", 1);
+	ft_putendl_fd("./fractol julia [cx] [cy]\n", 1);
+	ft_putendl_fd("Possible values for Julia set:\n", 1);
+	ft_putendl_fd("cx: -2.0 to 2.0", 1);
+	ft_putendl_fd("cy: -2.0 to 2.0\n", 1);
+	ft_putendl_fd("Example:", 1);
+	ft_putendl_fd("./fractol julia -0.745429 0.05\n", 1);
 }

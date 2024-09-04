@@ -17,7 +17,7 @@
 # include "minilibx-linux/mlx.h"
 # include <math.h>
 
-# define SIZE 800
+# define SIZE 1000
 
 # define ESC 65307
 # define UP 65362
@@ -64,15 +64,12 @@ void	init_mlx(t_fractal *fractal);
 int		exit_fractal(t_fractal *fractal);
 void	put_color_to_pixel(t_fractal *fractal, int x, int y, int color);
 void	zoom(t_fractal *fractal, int x, int y, int zoom);
-void	draw_mandelbrot(t_fractal *fractal);
-void	calculate_mandelbrot(t_fractal *fractal);
-void	draw_julia(t_fractal *fractal);
-void	calculate_julia(t_fractal *fractal);
 double	ft_atof(const char *str);
 void	print_usage(void);
 void	draw_fractal(t_fractal *fractal);
 int		key_hook(int key_code, t_fractal *fractal);
 int		mouse_hook(int mouse_code, int x, int y, t_fractal *fractal);
-double ft_atof(const char *str);
+double	ft_atof(const char *str);
+void	parse_arguments(t_fractal *fractal, int argc, char ** argv);
 
 #endif

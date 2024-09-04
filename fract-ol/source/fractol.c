@@ -47,7 +47,6 @@ void	calculate_mandelbrot(t_fractal *fractal)
 	int		i;
 	double	x_temp;
 
-	fractal->name = "mandelbrot";
 	i = 0;
 	fractal->zx = 0.0;
 	fractal->zy = 0.0;
@@ -72,6 +71,7 @@ void	calculate_mandelbrot(t_fractal *fractal)
 
 void	draw_mandelbrot(t_fractal *fractal)
 {
+	fractal->name = "mandelbrot";
 	fractal->x = 0;
 	fractal->y = 0;
 	while (fractal->x < SIZE)
@@ -91,7 +91,6 @@ void	calculate_julia(t_fractal *fractal)
 	int		i;
 	double	tmp;
 
-	fractal->name = "julia";
 	fractal->zx = fractal->x / fractal->zoom + fractal->offset_x;
 	fractal->zy = fractal->y / fractal->zoom + fractal->offset_y;
 	i = 0;
@@ -114,6 +113,8 @@ void	calculate_julia(t_fractal *fractal)
 
 void	draw_julia(t_fractal *fractal)
 {
+	
+	fractal->name = "julia";
 	fractal->x = 0;
 	fractal->y = 0;
 	while (fractal->x < SIZE)

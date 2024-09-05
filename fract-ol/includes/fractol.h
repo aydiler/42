@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/04 17:17:01 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/04 19:05:46 by adiler           ###   ########.fr       */
+/*   Updated: 2024/09/05 16:13:07 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_fractal
 	char	*name;
 	int		max_iterations;
 	char	**argv;
-    int		argc;
+	int		argc;
 }			t_fractal;
 
 void	init_fractal(t_fractal *fractal);

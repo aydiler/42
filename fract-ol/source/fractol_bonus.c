@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fractol.c                                          :+:      :+:    :+:   */
+/*   fractol_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/04 17:16:35 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/04 19:19:33 by adiler           ###   ########.fr       */
+/*   Updated: 2024/09/05 16:08:45 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	calculate_burning_ship(t_fractal *fractal)
 	int		i;
 	double	x_temp;
 
-	fractal->name = "ship";
+	fractal->name = "burningship";
 	i = 0;
 	fractal->zx = 0.0;
 	fractal->zy = 0.0;

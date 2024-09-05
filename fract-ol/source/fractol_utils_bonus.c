@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/fractol.h"
+#include "../includes/fractol_bonus.h"
 
 void	init_fractal(t_fractal *fractal)
 {
@@ -56,6 +56,7 @@ void	print_usage(void)
 {
 	ft_putendl_fd("Usage:\n", 1);
 	ft_putendl_fd("./fractol mandelbrot\n", 1);
+	ft_putendl_fd("./fractol burningship\n", 1);
 	ft_putendl_fd("./fractol julia [cx] [cy]\n", 1);
 	ft_putendl_fd("Practical values for Julia set:\n", 1);
 	ft_putendl_fd("cx: -2.0 to 2.0", 1);

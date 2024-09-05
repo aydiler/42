@@ -10,12 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/fractol.h"
+#include "../includes/fractol_bonus.h"
 
 int key_hook(int key_code, t_fractal *fractal)
 {
     if (key_code == ESC)
         exit_fractal(fractal);
+    else if (key_code == LEFT)
+        fractal->offset_x -= 42 / fractal->zoom;
+    else if (key_code == RIGHT)
+        fractal->offset_x += 42 / fractal->zoom;
+    else if (key_code == UP)
+        fractal->offset_y -= 42 / fractal->zoom;
+    else if (key_code == DOWN)
+        fractal->offset_y += 42 / fractal->zoom;
+    else if (key_code == R)
+        init_fractal(fractal);
+    else if (key_code == C)
+        fractal->color += (255 * 255 * 255) / 100;
     draw_fractal(fractal);
     return (0);
 }

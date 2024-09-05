@@ -1,4 +1,4 @@
-#include "../includes/fractol.h"
+#include "../includes/fractol_bonus.h"
 
 double parse_digits(const char *str, int *decimal_seen)
 {
@@ -66,12 +66,25 @@ static void	handle_julia(t_fractal *fractal, int argc, char **argv)
 	fractal->cy = ft_atof(argv[3]);
 }
 
+static void	handle_burningship(t_fractal *fractal, int argc)
+{
+	if (argc != 2)
+	{
+		ft_putendl_fd("Burning Ship doesn't require additional parameters", 1);
+		print_usage();
+		exit(0);
+	}
+	fractal->name = "burningship";
+}
+
 void	parse_arguments(t_fractal *fractal, int argc, char ** argv)
 {
 	if (ft_strncmp(argv[1], "mandelbrot", 11) == 0)
 		handle_mandelbrot(fractal, argc);
 	else if (ft_strncmp(argv[1], "julia", 6) == 0)
 		handle_julia(fractal, argc, argv);
+	else if (ft_strncmp(argv[1], "burningship", 12) == 0)
+		handle_burningship(fractal, argc);
 	else
 	{
 		print_usage();

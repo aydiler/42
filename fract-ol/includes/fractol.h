@@ -44,8 +44,8 @@ typedef struct s_fractal
 	double	zoom;
 	char	*name;
 	int		max_iterations;
-	char    **argv;
-    int     argc;
+	char	**argv;
+    int		argc;
 }			t_fractal;
 
 void	init_fractal(t_fractal *fractal);
@@ -59,6 +59,6 @@ void	draw_fractal(t_fractal *fractal);
 int		key_hook(int key_code, t_fractal *fractal);
 int		mouse_hook(int mouse_code, int x, int y, t_fractal *fractal);
 double	ft_atof(const char *str);
-void	parse_arguments(t_fractal *fractal, int argc, char ** argv);
+void	parse_arguments(t_fractal *fractal, int argc, char **argv);
 
 #endif

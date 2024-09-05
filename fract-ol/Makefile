@@ -17,11 +17,11 @@ INCLUDES	= -I./includes \
 SOURCE		= ./source/
 
 SRC = $(addprefix $(SOURCE), \
-    fractol.c fractol_utils.c hooks.c parse_arguments.c \
+    fractol.c fractol_utils.c hooks.c parse_arguments.c ft_atof.c\
 )
 
 BONUS_SRC = $(addprefix $(SOURCE), \
-    fractol_bonus.c fractol_utils_bonus.c hooks_bonus.c parse_arguments_bonus.c \
+    fractol_bonus.c fractol_utils_bonus.c hooks_bonus.c parse_arguments_bonus.c ft_atof.c \
 )
 
 OBJ = $(SRC:%.c=%.o)

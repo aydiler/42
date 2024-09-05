@@ -104,7 +104,8 @@ void	draw_fractal(t_fractal *fractal)
 		fractal->x++;
 		fractal->y = 0;
 	}
-	mlx_put_image_to_window(fractal->mlx, fractal->window, fractal->image, 0, 0);
+	mlx_put_image_to_window(fractal->mlx, fractal->window, \
+		fractal->image, 0, 0);
 }
 
 int	main(int argc, char **argv)

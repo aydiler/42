@@ -12,39 +12,47 @@
 
 #include "../includes/fractol.h"
 
-static void	handle_mandelbrot(t_fractal *fractal, int argc)
+static double	parse_digits(const char *str, int *decimal_seen)
 {
-	if (argc != 2)
+	double	result;
+	double	factor;
+
+	result = 0.0;
+	factor = 1.0;
+	while (*str)
 	{
-		ft_putendl_fd("Mandelbrot doesn't require additional parameters", 1);
-		print_usage();
-		exit(0);
+		if (*str >= '0' && *str <= '9')
+		{
+			if (*decimal_seen)
+			{
+				factor *= 0.1;
+				result += (*str - '0') * factor;
+			}
+			else
+				result = result * 10.0 + (*str - '0');
+		}
+		else if (*str == '.' && !(*decimal_seen))
+			*decimal_seen = 1;
+		else
+			return (0.0);
+		str++;
 	}
-	fractal->name = "mandelbrot";
+	return (result);
 }
 
-static void	handle_julia(t_fractal *fractal, int argc, char **argv)
+double	ft_atof(const char *str)
 {
-	if (argc != 4)
-	{
-		ft_putendl_fd("Julia requires two additional parameters", 1);
-		print_usage();
-		exit(0);
-	}
-	fractal->name = "julia";
-	fractal->cx = ft_atof(argv[2]);
-	fractal->cy = ft_atof(argv[3]);
-}
+	int		sign;
+	int		decimal_seen;
 
-void	parse_arguments(t_fractal *fractal, int argc, char **argv)
-{
-	if (ft_strncmp(argv[1], "mandelbrot", 11) == 0)
-		handle_mandelbrot(fractal, argc);
-	else if (ft_strncmp(argv[1], "julia", 6) == 0)
-		handle_julia(fractal, argc, argv);
-	else
+	sign = 1;
+	decimal_seen = 0;
+	if (*str == '-')
 	{
-		print_usage();
-		exit(0);
+		sign = -1;
+		str++;
 	}
+	else if (*str == '+')
+		str++;
+	return (sign * parse_digits(str, &decimal_seen));
 }

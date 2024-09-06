@@ -1,29 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/06 16:40:04 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/06 16:40:05 by adiler           ###   ########.fr       */
+/*   Created: 2023/12/01 18:52:12 by adiler            #+#    #+#             */
+/*   Updated: 2023/12/08 21:21:32 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>  
-# include <stdlib.h>
+static void	write_n(long nb, int fd)
+{
+	char	ch;
 
-char	*find_command_path(const char *command, char **envp);
-void	free_args(char **args);
+	if (nb == 0)
+		return ;
+	write_n(nb / 10, fd);
+	ch = nb % 10 + '0';
+	write(fd, &ch, 1);
+}
 
-#endif
+void	ft_putnbr_fd(int n, int fd)
+{
+	long	nb;
+
+	if (n == 0)
+	{
+		write(fd, "0", 1);
+		return ;
+	}
+	nb = n;
+	if (n < 0)
+	{
+		write(fd, "-", 1);
+		nb = -nb;
+	}
+	write_n(nb, fd);
+}

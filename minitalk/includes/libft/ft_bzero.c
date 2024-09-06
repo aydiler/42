@@ -1,29 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/06 16:40:04 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/06 16:40:05 by adiler           ###   ########.fr       */
+/*   Created: 2023/11/15 14:14:25 by adiler            #+#    #+#             */
+/*   Updated: 2023/12/11 16:56:09 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>  
-# include <stdlib.h>
+void	ft_bzero(void *s, size_t n)
+{
+	char	*p;
 
-char	*find_command_path(const char *command, char **envp);
-void	free_args(char **args);
-
-#endif
+	p = (char *)s;
+	while (n > 0)
+	{
+		p[n - 1] = 0;
+		n--;
+	}
+}

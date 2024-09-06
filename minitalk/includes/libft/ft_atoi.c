@@ -1,29 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/06 16:40:04 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/06 16:40:05 by adiler           ###   ########.fr       */
+/*   Created: 2023/11/22 14:58:04 by adiler            #+#    #+#             */
+/*   Updated: 2023/12/11 16:55:31 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>  
-# include <stdlib.h>
+int	ft_atoi(const char *nptr)
+{
+	int	sign;
+	int	nb;
 
-char	*find_command_path(const char *command, char **envp);
-void	free_args(char **args);
-
-#endif
+	sign = 1;
+	nb = 0;
+	while (*nptr == ' ' || (*nptr >= '\t' && *nptr <= '\r'))
+		nptr++;
+	if (*nptr == '-' || *nptr == '+')
+	{
+		if (*nptr == '-')
+			sign = sign * -1;
+		nptr++;
+	}
+	while (*nptr)
+	{
+		if (ft_isdigit(*nptr))
+			nb = nb * 10 + (*nptr - 48);
+		else
+			return (nb * sign);
+		nptr++;
+	}
+	return (nb * sign);
+}

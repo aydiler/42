@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/06 16:40:04 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/06 16:40:05 by adiler           ###   ########.fr       */
+/*   Created: 2023/11/22 12:26:03 by adiler            #+#    #+#             */
+/*   Updated: 2023/12/11 17:18:15 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include "./libft/libft.h"
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>  
-# include <stdlib.h>
+void	*ft_memchr(const void *s, int c, size_t n)
+{
+	const unsigned char	*chr;
 
-char	*find_command_path(const char *command, char **envp);
-void	free_args(char **args);
-
-#endif
+	chr = s;
+	while (n > 0)
+	{
+		if (*chr == (unsigned char)c)
+			return ((void *)chr);
+		chr++;
+		n--;
+	}
+	return (NULL);
+}

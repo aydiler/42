@@ -1,72 +1,84 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/06 18:25:40 by adiler            #+#    #+#             */
+/*   Updated: 2024/09/06 19:02:56 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
 
 #define MAX_MESSAGE_LENGTH 1024
 
-static char message[MAX_MESSAGE_LENGTH];
-static volatile int message_length = 0;
-
-void sigusr_handler(int signum)
+void	print_server_pid(void)
 {
-    static int bit_count = 0;
-    static int current_char = 0;
+	pid_t	pid;
+	char	pid_str[10];
+	int		i;
 
-    if (signum == SIGUSR1)
-        current_char |= (1 << bit_count);
-
-    bit_count++;
-
-    if (bit_count == 8)
-    {
-        message[message_length++] = current_char;
-
-        if (current_char == '\0' || message_length == MAX_MESSAGE_LENGTH)
-        {
-            write(1, message, message_length - 1);
-            write(1, "\n", 1);
-            message_length = 0;
-            message[0] = '\0';
-        }
-
-        bit_count = 0;
-        current_char = 0;
-    }
+	pid = getpid();
+	i = 0;
+	if (pid == 0)
+		pid_str[i++] = '0';
+	else
+	{
+		while (pid)
+		{
+			pid_str[i++] = (pid % 10) + '0';
+			pid /= 10;
+		}
+	}
+	write(1, "Server PID: ", 12);
+	while (i > 0)
+		write(1, &pid_str[--i], 1);
+	write(1, "\n", 1);
 }
 
-int main()
+static void	sigusr_handler(int signum)
 {
-    struct sigaction sa;
+	static char	message[MAX_MESSAGE_LENGTH];
+	static int	bit_count;
+	static int	char_index;
+	static int	current_char;
 
-    write(1, "Server PID: ", 12);
-    char pid_str[10];
-    pid_str[0] = '\0';
-    char *pid_ptr = pid_str;
-    int pid = getpid();
-    while (pid != 0)
-    {
-        *pid_ptr++ = '0' + (pid % 10);
-        pid /= 10;
-    }
-    *pid_ptr = '\0';
-    int len = pid_ptr - pid_str;
-    for (int i = 0; i < len / 2; i++)
-    {
-        char temp = pid_str[i];
-        pid_str[i] = pid_str[len - 1 - i];
-        pid_str[len - 1 - i] = temp;
-    }
-    write(1, pid_str, len);
-    write(1, "\n", 1);
+	if (signum == SIGUSR1)
+		current_char |= (1 << bit_count);
+	else if (signum == SIGUSR2)
+		current_char &= ~(1 << bit_count);
+	bit_count++;
+	if (bit_count == 8)
+	{
+		message[char_index] = current_char;
+		char_index++;
+		if (current_char == '\0' || char_index == MAX_MESSAGE_LENGTH - 1)
+		{
+			message[char_index] = '\0';
+			write(1, message, char_index);
+			write(1, "\n", 1);
+			char_index = 0;
+		}
+		bit_count = 0;
+		current_char = 0;
+	}
+}
 
-    sigemptyset(&sa.sa_mask);
-    sa.sa_handler = sigusr_handler;
-    sa.sa_flags = 0;
-    sigaction(SIGUSR1, &sa, NULL);
-    sigaction(SIGUSR2, &sa, NULL);
+int	main(void)
+{
+	struct sigaction	sa;
 
-    while (1)
-        pause();
-
-    return 0;
+	print_server_pid();
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = sigusr_handler;
+	sa.sa_flags = 0;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
+	while (1)
+		pause();
+	return (0);
 }

@@ -1,7 +1,3 @@
-NAME = libftprintf.a
-LIBFTDIR = ./libft
-LIBFTNAME = libft.a
-
 SERVER_SRC = server.c
 CLIENT_SRC = client.c
 
@@ -12,19 +8,22 @@ FLAGS = -Wall -Wextra -Werror
 
 CC = cc
 
+LIBFTDIR = includes/libft
+LIBFTNAME = $(LIBFTDIR)/libft.a
+
 all: server client
 
 server: $(SERVER_OBJ) $(LIBFTNAME)
-	$(CC) $(FLAGS) $(SERVER_OBJ) $(LIBFTNAME) -o server
+	$(CC) $(FLAGS) $(SERVER_OBJ) -L$(LIBFTDIR) -lft -o server
 
 client: $(CLIENT_OBJ) $(LIBFTNAME)
-	$(CC) $(FLAGS) $(CLIENT_OBJ) $(LIBFTNAME) -o client
+	$(CC) $(FLAGS) $(CLIENT_OBJ) -L$(LIBFTDIR) -lft -o client
 
 $(LIBFTNAME):
-	make -C $(LIBFTDIR) all
+	make -C $(LIBFTDIR)
 
 %.o: %.c
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -I$(LIBFTDIR) -c $< -o $@
 
 clean:
 	make -C $(LIBFTDIR) clean

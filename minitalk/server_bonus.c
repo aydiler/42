@@ -40,13 +40,14 @@ void	print_server_pid(void)
 	write(1, "\n", 1);
 }
 
-static void	sigusr_handler(int signum)
+static void	sigusr_handler(int signum, siginfo_t *info, void *context)
 {
 	static char	message[MAX_MESSAGE_LENGTH];
 	static int	bit_count;
 	static int	char_index;
 	static int	current_char;
 
+	(void)context;
 	if (signum == SIGUSR1)
 		current_char |= (1 << bit_count);
 	else if (signum == SIGUSR2)
@@ -61,6 +62,7 @@ static void	sigusr_handler(int signum)
 			write(1, message, char_index);
 			write(1, "\n", 1);
 			char_index = 0;
+			kill(info->si_pid, SIGUSR1);
 		}
 		bit_count = 0;
 		current_char = 0;
@@ -73,8 +75,8 @@ int	main(void)
 
 	print_server_pid();
 	sigemptyset(&sa.sa_mask);
-	sa.sa_handler = sigusr_handler;
-	sa.sa_flags = 0;
+	sa.sa_sigaction = sigusr_handler;
+	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)

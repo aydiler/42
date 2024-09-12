@@ -1,4 +1,16 @@
-#include "push_swap.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   reverse_rotate.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/12 19:05:59 by adiler            #+#    #+#             */
+/*   Updated: 2024/09/12 19:06:06 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/push_swap.h"
 
 /* Top goes to bottom, anti-clockwise */
 static void	ft_reverse_rotate(t_list **head)

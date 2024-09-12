@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/12 19:08:28 by adiler            #+#    #+#             */
+/*   Updated: 2024/09/12 20:10:48 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/push_swap.h"
 
 static int	get_max_bits(t_list *stack)
@@ -10,8 +22,8 @@ static int	get_max_bits(t_list *stack)
 	max = 0;
 	while (current)
 	{
-		if ((long)current->content > max)
-			max = (long)current->content;
+		if ((intptr_t)current->content > max)
+			max = (intptr_t)current->content;
 		current = current->next;
 	}
 	max_bits = 0;
@@ -30,7 +42,7 @@ static void	radix_sort_bit(t_list **a, t_list **b, int bit)
 	i = 0;
 	while (i < size)
 	{
-		num = (long)(*a)->content;
+		num = (intptr_t)(*a)->content;
 		if (((num >> bit) & 1) == 1)
 			ft_ra();
 		else

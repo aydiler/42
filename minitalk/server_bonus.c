@@ -1,44 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 18:25:40 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/06 19:02:56 by adiler           ###   ########.fr       */
+/*   Updated: 2024/09/12 18:39:58 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "./includes/libft/libft.h"
 
 #define MAX_MESSAGE_LENGTH 1024
-
-void	print_server_pid(void)
-{
-	pid_t	pid;
-	char	pid_str[10];
-	int		i;
-
-	pid = getpid();
-	i = 0;
-	if (pid == 0)
-		pid_str[i++] = '0';
-	else
-	{
-		while (pid)
-		{
-			pid_str[i++] = (pid % 10) + '0';
-			pid /= 10;
-		}
-	}
-	write(1, "Server PID: ", 12);
-	while (i > 0)
-		write(1, &pid_str[--i], 1);
-	write(1, "\n", 1);
-}
 
 static void	sigusr_handler(int signum, siginfo_t *info, void *context)
 {
@@ -72,8 +49,12 @@ static void	sigusr_handler(int signum, siginfo_t *info, void *context)
 int	main(void)
 {
 	struct sigaction	sa;
+	pid_t				pid;
 
-	print_server_pid();
+	pid = getpid();
+	write(1, "Server PID: ", 12);
+	ft_putnbr_fd(pid, 1);
+	write(1, "\n", 1);
 	sigemptyset(&sa.sa_mask);
 	sa.sa_sigaction = sigusr_handler;
 	sa.sa_flags = SA_SIGINFO;

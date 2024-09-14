@@ -20,7 +20,7 @@ MOVES = $(addprefix moves/, \
 )
 
 STACK = $(addprefix stack/, \
-	build_stack.c declaration.c \
+	validate_input.c declaration.c \
 )
 
 SRC = $(addprefix $(SOURCE), \

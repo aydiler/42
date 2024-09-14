@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 19:08:28 by adiler            #+#    #+#             */
-/*   Updated: 2024/09/12 20:10:48 by adiler           ###   ########.fr       */
+/*   Updated: 2024/09/14 20:17:09 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,23 @@ static void	radix_sort_bit(t_list **a, t_list **b, int bit)
 
 	size = ft_lstsize(*a);
 	i = 0;
-	while (i < size)
+	while (i++ < size)
 	{
 		num = (intptr_t)(*a)->content;
 		if (((num >> bit) & 1) == 1)
+		{
 			ft_ra();
+			// print_stacks(*a, *b);
+		}
 		else
+		{
 			ft_pb();
-		i++;
+			// print_stacks(*a, *b);
+		}
 	}
 	while (*b)
 		ft_pa();
+	// print_stacks(*a, *b);
 }
 
 void	radix_sort(t_list **a, t_list **b)
@@ -79,7 +85,6 @@ int	main(int argc, char **argv)
 	if (!process_arguments(argc, argv))
 		return (1);
 	radix_sort(a, b);
-	print_stacks(*a, *b);
 	free_stack(a);
 	free_stack(b);
 	return (0);

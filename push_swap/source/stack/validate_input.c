@@ -82,7 +82,6 @@ int	process_single_argument(char *arg, t_list **a)
 	return (result);
 }
 
-
 int	process_arguments(int argc, char **argv)
 {
 	t_list	**a;

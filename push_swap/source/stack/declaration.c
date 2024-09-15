@@ -36,3 +36,21 @@ int	add_to_stack(t_list **stack, int number)
 	ft_lstadd_back(stack, new_node);
 	return (1);
 }
+
+int	is_valid_int_string(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}

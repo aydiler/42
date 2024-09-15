@@ -13,24 +13,6 @@
 #include "../../includes/push_swap.h"
 #include <limits.h>
 
-int	is_valid_int_string(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	if (!str[i])
-		return (0);
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	is_duplicate(t_list **stack, int num)
 {
 	t_list	*current;
@@ -55,39 +37,69 @@ int	validate_argument(char *arg, long *number)
 	return (1);
 }
 
-int	add_arguments_to_stack(int argc, char **argv, t_list **a)
+int	add_number_to_stack(t_list **a, char *arg)
 {
-	int		i;
 	long	number;
 
-	i = 1;
-	while (i < argc)
+	if (!validate_argument(arg, &number) || is_duplicate(a, (int)number))
 	{
-		if (!validate_argument(argv[i], &number) || \
-			is_duplicate(a, (int)number))
-		{
-			ft_putstr_fd("Error\n", 2);
-			return (0);
-		}
-		if (!add_to_stack(a, (int)number))
-		{
-			ft_putstr_fd("Error\n", 2);
-			return (0);
-		}
-		i++;
+		ft_putstr_fd("Error\n", 2);
+		return (0);
+	}
+	if (!add_to_stack(a, (int)number))
+	{
+		ft_putstr_fd("Error\n", 2);
+		return (0);
 	}
 	return (1);
 }
 
+int	process_single_argument(char *arg, t_list **a)
+{
+	char	**numbers;
+	int		i;
+	int		result;
+
+	numbers = ft_split(arg, ' ');
+	if (!numbers)
+		return (0);
+	i = 0;
+	result = 1;
+	while (numbers[i] && result)
+	{
+		result = add_number_to_stack(a, numbers[i]);
+		i++;
+	}
+	i = 0;
+	while (numbers[i])
+	{
+		free(numbers[i]);
+		i++;
+	}
+	free(numbers);
+	if (!result)
+		free_stack(a);
+	return (result);
+}
+
+
 int	process_arguments(int argc, char **argv)
 {
 	t_list	**a;
+	int		i;
 
 	a = stack_a();
-	if (!add_arguments_to_stack(argc, argv, a))
+	if (argc == 2)
+		return (process_single_argument(argv[1], a));
+	i = 1;
+	while (i < argc)
 	{
-		free_stack(a);
-		return (0);
+		if (!add_number_to_stack(a, argv[i]))
+		{
+			free_stack(a);
+			return (0);
+		}
+		i++;
 	}
 	return (1);
 }

@@ -27,6 +27,7 @@ t_list		**stack_b(void);
 void		free_stack(t_list **stack);
 int			process_arguments(int argc, char **argv);
 int			add_to_stack(t_list **stack, int number);
+int			is_valid_int_string(const char *str);
 // void		print_stacks(t_list *a, t_list *b);
 void		ft_pa(void);
 void		ft_pb(void);

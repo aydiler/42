@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
-
+/*
 static int	get_stack_size(t_list *stack)
 {
 	int		size;
@@ -78,3 +78,4 @@ void	print_stacks(t_list *a, t_list *b)
 	printf("a   b\n");
 	printf("-------------------\n");
 }
+*/

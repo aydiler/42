@@ -46,17 +46,14 @@ static void	radix_sort_bit(t_list **a, t_list **b, int bit)
 		if (((num >> bit) & 1) == 1)
 		{
 			ft_ra();
-			// print_stacks(*a, *b);
 		}
 		else
 		{
 			ft_pb();
-			// print_stacks(*a, *b);
 		}
 	}
 	while (*b)
 		ft_pa();
-	// print_stacks(*a, *b);
 }
 
 void	radix_sort(t_list **a, t_list **b)
@@ -89,3 +86,8 @@ int	main(int argc, char **argv)
 	free_stack(b);
 	return (0);
 }
+
+/*
+ARG=(3 2 6 7)
+./push_swap "${ARG[@]}" | ../checker_linux "${ARG[@]}"
+*/

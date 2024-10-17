@@ -14,6 +14,7 @@ typedef struct s_philo {
     struct s_fork *right_fork;
 	time_t start_time;
 	time_t last_meal;
+    int* died;
 } t_philo;
 
 typedef struct s_fork {

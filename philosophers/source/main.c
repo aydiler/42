@@ -21,6 +21,7 @@ typedef struct s_philo
     pthread_mutex_t *left_fork;
     pthread_mutex_t *right_fork;
     long long       last_meal;
+    int             times_eaten;
     struct s_resources *resources;  // Pointer to the shared resources
 } t_philo;
 
@@ -40,10 +41,8 @@ typedef struct s_resources
     pthread_mutex_t *forks;
     pthread_mutex_t start_time_mutex;
     pthread_mutex_t died_mutex;
-    pthread_mutex_t times_eaten_mutex;
     long long       start_time;
     int             died;
-    int             times_eaten;
     t_params        params;  // Include params in resources for easy access
 } t_resources;
 
@@ -99,38 +98,7 @@ void refresh_last_time_ate(t_philo *philo)
         print_status(philo, "died");
     }
     else
-    {
         pthread_mutex_unlock(&philo->resources->died_mutex);
-    }
-}
-
-void refresh_times_eaten(t_philo *philo)
-{
-    int times_eaten;
-    int num_times_to_eat;
-
-    pthread_mutex_lock(&philo->resources->died_mutex);
-    if (philo->resources->died)
-    {
-        pthread_mutex_unlock(&philo->resources->died_mutex);
-        return;
-    }
-
-    pthread_mutex_lock(&philo->resources->times_eaten_mutex);
-    times_eaten = philo->resources->times_eaten;
-    pthread_mutex_unlock(&philo->resources->times_eaten_mutex);
-    
-    num_times_to_eat = philo->resources->params.num_times_to_eat;
-    if (num_times_to_eat != -1 && times_eaten >= num_times_to_eat)
-    {
-        philo->resources->died = 1;
-        pthread_mutex_unlock(&philo->resources->died_mutex);
-        print_status(philo, "has eaten enough");
-    }
-    else
-    {
-        pthread_mutex_unlock(&philo->resources->died_mutex);
-    }
 }
 
 int check_terminated(t_philo *philo)
@@ -138,7 +106,6 @@ int check_terminated(t_philo *philo)
     int terminated = 0;
 
 	refresh_last_time_ate(philo);
-	refresh_times_eaten(philo);
 
 	pthread_mutex_lock(&philo->resources->died_mutex);
 	terminated = philo->resources->died;
@@ -165,30 +132,31 @@ int philo_sleep(long long sleep_time, t_philo *philo)
     return (0);
 }
 
-int acquire_fork(pthread_mutex_t *fork, t_philo *philo)
-{
-    while (1)
-    {
-        if (check_terminated(philo))
-            return 1;
-        if (pthread_mutex_lock(fork) == 0)  // Regular blocking lock
-            return 0;  // Successfully acquired the fork
-        usleep(USLEEP_INTERVAL);  // Sleep briefly before checking again
-    }
-}
-
 int philo_think(t_philo *philo)
 {
-    long long think_time = 100; // Simulate thinking for 100ms
+    long long think_time = 100;
     long long wake_up = get_time_in_ms() + think_time;
     
     while (get_time_in_ms() < wake_up)
     {
         if (check_terminated(philo))
             return (1);
-        usleep(USLEEP_INTERVAL); // Small intervals, like 1ms
+        usleep(USLEEP_INTERVAL);
     }
     return (0);
+}
+
+int acquire_fork(pthread_mutex_t *fork, t_philo *philo)
+{
+    while (1)
+    {
+        if (check_terminated(philo))
+            return 1;
+        // Attempt to lock the fork
+        if (pthread_mutex_lock(fork) == 0)  // Only lock if successful
+            return 0;
+        usleep(USLEEP_INTERVAL);
+    }
 }
 
 void *philo_routine(void *philos)
@@ -196,6 +164,22 @@ void *philo_routine(void *philos)
     t_philo *philo;
 
     philo = (t_philo *)philos;
+
+    // Handle the edge case for one philosopher
+    if (philo->resources->params.num_philos == 1)
+    {
+        print_status(philo, "has taken a fork");
+        // Philosopher cannot take the second fork, so they will die
+        philo_sleep(philo->resources->params.time_to_die, philo);
+        print_status(philo, "died");
+
+        pthread_mutex_lock(&philo->resources->died_mutex);
+        philo->resources->died = 1;  // Signal that the philosopher has died
+        pthread_mutex_unlock(&philo->resources->died_mutex);
+
+        return NULL;
+    }
+
     while (1)
     {
         if (check_terminated(philo))
@@ -217,25 +201,23 @@ void *philo_routine(void *philos)
         // Eating
         if (check_terminated(philo))
         {
-            pthread_mutex_unlock(philo->right_fork);
+            pthread_mutex_unlock(philo->right_fork);  // Ensure both forks are released
             pthread_mutex_unlock(philo->left_fork);
             return NULL;
         }
         print_status(philo, "is eating");
         philo->last_meal = get_time_in_ms();
-        pthread_mutex_lock(&philo->resources->times_eaten_mutex);
-        philo->resources->times_eaten++;
-        pthread_mutex_unlock(&philo->resources->times_eaten_mutex);
+        philo->times_eaten++;
 
         // Simulate eating and check for termination during the process
         if (philo_sleep(philo->resources->params.time_to_eat, philo))
         {
-            pthread_mutex_unlock(philo->right_fork);
+            pthread_mutex_unlock(philo->right_fork);  // Ensure both forks are released
             pthread_mutex_unlock(philo->left_fork);
             return NULL;
         }
 
-        // Release forks
+        // Release forks after eating
         pthread_mutex_unlock(philo->right_fork);
         pthread_mutex_unlock(philo->left_fork);
 
@@ -243,19 +225,67 @@ void *philo_routine(void *philos)
         if (check_terminated(philo))
             return NULL;
         print_status(philo, "is sleeping");
-        // Simulate sleeping and check for termination during the process
+
         if (philo_sleep(philo->resources->params.time_to_sleep, philo))
             return NULL;
 
-		if(check_terminated(philo))
-			return NULL;
-		print_status(philo, "is thinking");
-        // Simulate thinking and check termination periodically
+        // Thinking
+        if (check_terminated(philo))
+            return NULL;
+        print_status(philo, "is thinking");
+
         if (philo_think(philo))
             return NULL;
     }
     return NULL;
 }
+
+void *monitor_routine(void *arg)
+{
+    t_philo *philos;
+    int i;
+    int num_philos;
+    int num_times_to_eat;
+    int finished_philos;
+
+    philos = (t_philo *)arg;
+    num_philos = philos[0].resources->params.num_philos;
+    num_times_to_eat = philos[0].resources->params.num_times_to_eat;
+
+    while (1)
+    {
+        i = 0;
+        finished_philos = 0;
+        while (i < num_philos)
+        {
+            pthread_mutex_lock(&philos[i].resources->died_mutex);
+            if (philos[i].resources->died)
+            {
+                pthread_mutex_unlock(&philos[i].resources->died_mutex);
+                return NULL;
+            }
+            pthread_mutex_unlock(&philos[i].resources->died_mutex);
+
+            // Check if all philosophers have eaten the required number of times
+            if (num_times_to_eat != -1 && philos[i].times_eaten >= num_times_to_eat)
+                finished_philos++;
+            i++;
+        }
+
+        // If all philosophers have eaten enough times, terminate
+        if (finished_philos == num_philos)
+        {
+            printf("All philosophers have eaten %d times\n", num_times_to_eat);
+            pthread_mutex_lock(&philos[0].resources->died_mutex);
+            philos[0].resources->died = 1;
+            pthread_mutex_unlock(&philos[0].resources->died_mutex);
+            return NULL;
+        }
+    }
+    return NULL;
+}
+
+
 
 void	init_forks(pthread_mutex_t *forks, int num_philos)
 {
@@ -289,6 +319,11 @@ void	init_threads(pthread_t *threads, t_philo *philos,
 		}
 		i++;
 	}
+    if (pthread_create(&threads[i], NULL, &monitor_routine, philos) != 0)
+    {
+        printf("Thread creation failed\n");
+        exit(1);
+    }
 	i = 0;
 	while (i < num_philos)
 	{
@@ -299,6 +334,11 @@ void	init_threads(pthread_t *threads, t_philo *philos,
 		}
 		i++;
 	}
+    if (pthread_join(threads[i], NULL) != 0)
+    {
+        printf("Thread join failed\n");
+        exit(1);
+    }
 }
 
 int parse_arguments(int argc, char **argv, t_params *params)
@@ -333,7 +373,7 @@ void free_resources(t_resources *resources)
 
 int allocate_resources(t_resources *resources, int num_philos)
 {
-    resources->threads = malloc(sizeof(pthread_t) * num_philos);
+    resources->threads = malloc(sizeof(pthread_t) * num_philos + 1);
     resources->philos = malloc(sizeof(t_philo) * num_philos);
     resources->forks = malloc(sizeof(pthread_mutex_t) * num_philos);
     if (!resources->threads || !resources->philos || !resources->forks)
@@ -348,8 +388,7 @@ int allocate_resources(t_resources *resources, int num_philos)
 int initialize_mutexes(t_resources *resources, t_params *params)
 {
     if (pthread_mutex_init(&resources->start_time_mutex, NULL) != 0 ||
-        pthread_mutex_init(&resources->died_mutex, NULL) != 0 ||
-        pthread_mutex_init(&resources->times_eaten_mutex, NULL) != 0)
+        pthread_mutex_init(&resources->died_mutex, NULL) != 0)
     {
         printf("Mutex initialization failed\n");
         return FALSE;
@@ -364,6 +403,7 @@ void init_philo(t_philo *philo, t_resources *resources, int id)
     philo->left_fork = &resources->forks[id];
     philo->right_fork = &resources->forks[(id + 1) % resources->params.num_philos];
     philo->last_meal = resources->start_time;
+    philo->times_eaten = 0;
     philo->resources = resources;
 }
 
@@ -383,7 +423,6 @@ void initialize_simulation(t_resources *resources, t_params *params)
 {
     resources->start_time = get_time_in_ms();
     resources->died = 0;
-    resources->times_eaten = 0;
     resources->params = *params;
 
     init_philos(resources->philos, resources);
@@ -393,7 +432,6 @@ void cleanup_simulation(t_resources *resources, int num_philos)
 {
     pthread_mutex_destroy(&resources->start_time_mutex);
     pthread_mutex_destroy(&resources->died_mutex);
-    pthread_mutex_destroy(&resources->times_eaten_mutex);
 
     for (int i = 0; i < num_philos; i++)
     {

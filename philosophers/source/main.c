@@ -8,7 +8,7 @@
 ** Constants
 */
 #define MAX_PHILOSOPHERS 200
-#define USLEEP_INTERVAL 200
+#define USLEEP_INTERVAL 100
 #define TRUE 1
 #define FALSE 0
 
@@ -88,6 +88,10 @@ void refresh_last_time_ate(t_philo *philo)
 
     last_meal_time = philo->last_meal;
     time_to_die = philo->resources->params.time_to_die;
+
+    // printf("Checking Philosopher %d - Current Time: %lld, Last Meal: %lld, Time to Die: %lld\n",
+    //        philo->id + 1, current_time, last_meal_time, time_to_die);
+
     if (current_time - last_meal_time > time_to_die)
     {
         philo->resources->died = 1;
@@ -133,33 +137,56 @@ int check_terminated(t_philo *philo)
 {
     int terminated = 0;
 
-    pthread_mutex_lock(&philo->resources->died_mutex);
-    terminated = philo->resources->died;
-    pthread_mutex_unlock(&philo->resources->died_mutex);
+	refresh_last_time_ate(philo);
+	refresh_times_eaten(philo);
 
-    if (!terminated)
-    {
-        refresh_last_time_ate(philo);
-        refresh_times_eaten(philo);
+	pthread_mutex_lock(&philo->resources->died_mutex);
+	terminated = philo->resources->died;
+	pthread_mutex_unlock(&philo->resources->died_mutex);
 
-        pthread_mutex_lock(&philo->resources->died_mutex);
-        terminated = philo->resources->died;
-        pthread_mutex_unlock(&philo->resources->died_mutex);
-    }
-
-    return terminated;
+	return terminated;
 }
 
 int philo_sleep(long long sleep_time, t_philo *philo)
 {
-    long long wake_up;
+    long long start_time = get_time_in_ms();
+    long long current_time = start_time;
 
-    wake_up = get_time_in_ms() + sleep_time;
+    while (current_time - start_time < sleep_time)
+    {
+        if (check_terminated(philo))
+		{
+            return (1);
+		}
+		pthread_mutex_unlock(&philo->resources->died_mutex);
+        usleep(USLEEP_INTERVAL);
+        current_time = get_time_in_ms();
+    }
+    return (0);
+}
+
+int acquire_fork(pthread_mutex_t *fork, t_philo *philo)
+{
+    while (1)
+    {
+        if (check_terminated(philo))
+            return 1;
+        if (pthread_mutex_lock(fork) == 0)  // Regular blocking lock
+            return 0;  // Successfully acquired the fork
+        usleep(USLEEP_INTERVAL);  // Sleep briefly before checking again
+    }
+}
+
+int philo_think(t_philo *philo)
+{
+    long long think_time = 100; // Simulate thinking for 100ms
+    long long wake_up = get_time_in_ms() + think_time;
+    
     while (get_time_in_ms() < wake_up)
     {
         if (check_terminated(philo))
             return (1);
-        usleep(USLEEP_INTERVAL);
+        usleep(USLEEP_INTERVAL); // Small intervals, like 1ms
     }
     return (0);
 }
@@ -174,20 +201,15 @@ void *philo_routine(void *philos)
         if (check_terminated(philo))
             return NULL;
 
-        // Try to take forks
-        pthread_mutex_lock(philo->left_fork);
-        if (check_terminated(philo))
-        {
-            pthread_mutex_unlock(philo->left_fork);
+        // Try to acquire the left fork
+        if (acquire_fork(philo->left_fork, philo))
             return NULL;
-        }
         print_status(philo, "has taken a fork");
 
-        pthread_mutex_lock(philo->right_fork);
-        if (check_terminated(philo))
+        // Try to acquire the right fork
+        if (acquire_fork(philo->right_fork, philo))
         {
-            pthread_mutex_unlock(philo->right_fork);
-            pthread_mutex_unlock(philo->left_fork);
+            pthread_mutex_unlock(philo->left_fork);  // Release left fork if we can't get the right one
             return NULL;
         }
         print_status(philo, "has taken a fork");
@@ -205,6 +227,7 @@ void *philo_routine(void *philos)
         philo->resources->times_eaten++;
         pthread_mutex_unlock(&philo->resources->times_eaten_mutex);
 
+        // Simulate eating and check for termination during the process
         if (philo_sleep(philo->resources->params.time_to_eat, philo))
         {
             pthread_mutex_unlock(philo->right_fork);
@@ -212,6 +235,7 @@ void *philo_routine(void *philos)
             return NULL;
         }
 
+        // Release forks
         pthread_mutex_unlock(philo->right_fork);
         pthread_mutex_unlock(philo->left_fork);
 
@@ -219,13 +243,16 @@ void *philo_routine(void *philos)
         if (check_terminated(philo))
             return NULL;
         print_status(philo, "is sleeping");
+        // Simulate sleeping and check for termination during the process
         if (philo_sleep(philo->resources->params.time_to_sleep, philo))
             return NULL;
 
-        // Thinking
-        if (check_terminated(philo))
+		if(check_terminated(philo))
+			return NULL;
+		print_status(philo, "is thinking");
+        // Simulate thinking and check termination periodically
+        if (philo_think(philo))
             return NULL;
-        print_status(philo, "is thinking");
     }
     return NULL;
 }
@@ -357,7 +384,7 @@ void initialize_simulation(t_resources *resources, t_params *params)
     resources->start_time = get_time_in_ms();
     resources->died = 0;
     resources->times_eaten = 0;
-    resources->params = *params;  // Copy params into resources
+    resources->params = *params;
 
     init_philos(resources->philos, resources);
 }

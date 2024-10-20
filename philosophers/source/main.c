@@ -81,7 +81,6 @@ void eat_and_sleep(t_philo *philo)
     print_status(philo, "has taken a fork");
 
     // Start eating
-    philo->is_eating = 1;
     print_status(philo, "is eating");
 
     // Update eating stats
@@ -92,7 +91,6 @@ void eat_and_sleep(t_philo *philo)
 
     // Simulate eating
     ft_usleep(philo->params.time_to_eat, philo);
-    philo->is_eating = 0;
 
     // Check for termination before proceeding
     if(check_terminated(philo))
@@ -150,7 +148,7 @@ int refresh_last_time_ate(t_philo *philo)
     size_t time_to_die = philo->params.time_to_die;
 
     pthread_mutex_lock(philo->eat_mutex);
-    if (current_time - philo->last_meal > time_to_die && !philo->is_eating)
+    if (current_time - philo->last_meal > time_to_die)
     {
         pthread_mutex_unlock(philo->eat_mutex);
         return 1;
@@ -249,7 +247,6 @@ int initialize_philos(t_resources *resources)
         philo[i].id = i;
         philo[i].left_fork = &resources->forks[i];
         philo[i].right_fork = &resources->forks[(i + 1) % resources->params.num_philos];
-        philo[i].is_eating = 0;
         philo[i].last_meal = resources->start_time;
         philo[i].times_eaten = 0;
         philo[i].died = 0;

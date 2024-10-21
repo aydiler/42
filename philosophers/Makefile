@@ -1,6 +1,6 @@
 NAME = philo
 
-SRC = main.c init.c threads.c
+SRC = main.c init.c threads.c utils.c
 
 MANPATH = $(addprefix ./source/, $(SRC))
 
@@ -8,7 +8,7 @@ FLAGS = -Wall -Wextra -Werror
 
 HEADER = ./includes/philo.h
 
-.PHONY: all clean fclean re debug
+.PHONY: all clean fclean re debug tsan
 
 all: $(NAME)
 
@@ -25,3 +25,6 @@ re: fclean all
 
 debug: FLAGS += -g
 debug: re
+
+tsan: FLAGS += -fsanitize=thread -g
+tsan: re

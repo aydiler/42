@@ -85,3 +85,4 @@ int check_terminated(t_philo *philo);
 int		refresh_last_time_ate(t_philo *philo);
 size_t	get_current_time(void);
 int		ft_usleep(size_t sleep_time, t_philo *philo);
+int	initialize(t_resources *resources);

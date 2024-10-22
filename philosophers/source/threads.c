@@ -55,6 +55,5 @@ int	join_threads(t_resources *resources)
 		printf("Monitor thread join failed\n");
 		return (0);
 	}
-
 	return (1);
 }

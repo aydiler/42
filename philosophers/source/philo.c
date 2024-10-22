@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/21 16:38:47 by adiler            #+#    #+#             */
+/*   Updated: 2024/10/21 18:32:40 by adiler           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 int	check_terminated(t_philo *philo)
@@ -30,19 +42,8 @@ void	philo_eat(t_philo *philo)
 {
 	assign_forks(philo);
 	pthread_mutex_lock(philo->primary_fork);
-	if (check_terminated(philo))
-	{
-		pthread_mutex_unlock(philo->primary_fork);
-		return ;
-	}
 	print_status(philo, "has taken a fork");
 	pthread_mutex_lock(philo->secondary_fork);
-	if (check_terminated(philo))
-	{
-		pthread_mutex_unlock(philo->primary_fork);
-		pthread_mutex_unlock(philo->secondary_fork);
-		return ;
-	}
 	print_status(philo, "has taken a fork");
 	print_status(philo, "is eating");
 	pthread_mutex_lock(philo->eat_mutex);

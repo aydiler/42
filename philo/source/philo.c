@@ -24,18 +24,21 @@ int	check_terminated(t_philo *philo)
 	return (0);
 }
 
-void	assign_forks(t_philo *philo)
+void assign_forks(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
-	{
-		philo->primary_fork = philo->left_fork;
-		philo->secondary_fork = philo->right_fork;
-	}
-	else
-	{
-		philo->primary_fork = philo->right_fork;
-		philo->secondary_fork = philo->left_fork;
-	}
+    pthread_mutex_lock(philo->eat_mutex);
+    pthread_mutex_unlock(philo->eat_mutex);
+
+    if (philo->id % 2 == 0)
+    {
+        philo->primary_fork = philo->left_fork;
+        philo->secondary_fork = philo->right_fork;
+    }
+    else
+    {
+        philo->primary_fork = philo->right_fork;
+        philo->secondary_fork = philo->left_fork;
+    }
 }
 
 void	philo_eat(t_philo *philo)

@@ -1,6 +1,6 @@
 NAME = philo
 
-SRC = main.c init.c threads.c utils.c monitor.c philo.c
+SRC = main.c init.c threads.c utils.c monitor.c philo.c parse.c
 
 MANPATH = $(addprefix ./source/, $(SRC))
 
@@ -26,5 +26,5 @@ re: fclean all
 debug: FLAGS += -g
 debug: re
 
-tsan: FLAGS += -fsanitize=thread -g
+tsan: FLAGS += -pthread -g
 tsan: re

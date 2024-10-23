@@ -3,6 +3,8 @@ NAME = philo
 SRC = main.c init.c threads.c utils.c monitor.c philo.c parse.c
 
 MANPATH = $(addprefix ./source/, $(SRC))
+OBJ = $(SRC:.c=.o)
+OBJPATH = $(addprefix ./source/, $(OBJ))
 
 FLAGS = -Wall -Wextra -Werror
 
@@ -12,19 +14,19 @@ HEADER = ./includes/philo.h
 
 all: $(NAME)
 
-$(NAME): $(MANPATH) $(HEADER)
-	@cc $(FLAGS) -o $(NAME) $(MANPATH)
+$(NAME): $(OBJPATH)
+	@cc $(FLAGS) -o $(NAME) $(OBJPATH)
+
+./source/%.o: ./source/%.c $(HEADER)
+	@cc $(FLAGS) -c $< -o $@
 
 clean:
-	@rm -f $(NAME)
+	@rm -f $(OBJPATH)
 
 fclean: clean
 	@rm -f $(NAME)
 
 re: fclean all
-
-debug: FLAGS += -g
-debug: re
 
 tsan: FLAGS += -pthread -g
 tsan: re

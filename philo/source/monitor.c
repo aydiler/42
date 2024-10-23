@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:38:47 by adiler            #+#    #+#             */
-/*   Updated: 2024/10/21 18:32:40 by adiler           ###   ########.fr       */
+/*   Updated: 2024/10/23 15:46:45 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	*monitor_routine(void *arg)
 	{
 		if (check_philosopher_death(resources, num_philos))
 		{
-			pthread_mutex_unlock(&resources->print_mutex);
 			return (NULL);
 		}
 		pthread_mutex_lock(&resources->print_mutex);

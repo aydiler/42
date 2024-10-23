@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:45:59 by adiler            #+#    #+#             */
-/*   Updated: 2024/10/21 16:58:00 by adiler           ###   ########.fr       */
+/*   Updated: 2024/10/23 15:56:15 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,3 +84,4 @@ int		refresh_last_time_ate(t_philo *philo);
 size_t	get_current_time(void);
 int		ft_usleep(size_t sleep_time, t_philo *philo);
 int		initialize(t_resources *resources);
+int		ft_atoi(char *str);

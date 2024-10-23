@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:38:47 by adiler            #+#    #+#             */
-/*   Updated: 2024/10/21 18:32:40 by adiler           ###   ########.fr       */
+/*   Updated: 2024/10/23 15:57:10 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ static int	validate_philo_params(int num_philos)
 
 static int	parse_time_params(int argc, char **argv, t_params *params)
 {
-	params->time_to_die = atoi(argv[2]);
-	params->time_to_eat = atoi(argv[3]);
-	params->time_to_sleep = atoi(argv[4]);
+	params->time_to_die = ft_atoi(argv[2]);
+	params->time_to_eat = ft_atoi(argv[3]);
+	params->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 	{
-		if (atoi(argv[5]) <= 0)
+		if (ft_atoi(argv[5]) <= 0)
 		{
 			printf("Invalid number of times to eat.\n");
 			return (0);
 		}
-		params->num_times_to_eat = atoi(argv[5]);
+		params->num_times_to_eat = ft_atoi(argv[5]);
 	}
 	else
 		params->num_times_to_eat = -1;
@@ -56,7 +56,7 @@ static int	parse_time_params(int argc, char **argv, t_params *params)
 
 static int	parse_philo_params(char **argv, t_params *params)
 {
-	params->num_philos = atoi(argv[1]);
+	params->num_philos = ft_atoi(argv[1]);
 	return (validate_philo_params(params->num_philos));
 }
 

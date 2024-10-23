@@ -34,7 +34,7 @@ int	initialize_philos(t_resources *resources)
 	philo = resources->philos;
 	while (i < resources->params.num_philos)
 	{
-		philo[i].id = i;
+		philo[i].id = i + 1;
 		philo[i].left_fork = &resources->forks[i];
 		philo[i].right_fork = &resources->forks[(i + 1) % \
 			resources->params.num_philos];

@@ -20,7 +20,7 @@ void	print_status(t_philo *philo, const char *status)
 	elapsed_time = get_current_time() - philo->start_time;
 	if (!check_terminated(philo))
 	{
-		printf("%zu %d %s\n", elapsed_time, philo->id + 1, status);
+		printf("%zu %d %s\n", elapsed_time, philo->id, status);
 	}
 	pthread_mutex_unlock(philo->print_mutex);
 }

@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include <stdint.h>
 
 #define MAX_PHILOSOPHERS 200
 #define USLEEP_INTERVAL 200

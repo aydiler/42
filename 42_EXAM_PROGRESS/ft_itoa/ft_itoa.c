@@ -24,7 +24,7 @@ char *ft_itoa(int nbr)
 	char *str;
 	int len = numlen(num);
 
-	str = malloc(sizeof(int) * (len+1));
+	str = malloc(sizeof(char) * (len+1));
 	if (!str)
 		return NULL;
 	if(num == 0)
@@ -48,11 +48,11 @@ char *ft_itoa(int nbr)
 	}
 	return str;
 }
-/*
+
 int main()
 {
-	int num = 0;
+	int num = -234;
 	printf("numlen: %d\n", numlen(num));
 	printf("itoa: %s\n", ft_itoa(num));
 }
-*/
+

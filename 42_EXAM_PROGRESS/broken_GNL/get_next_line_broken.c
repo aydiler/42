@@ -2,18 +2,18 @@
 
 char *ft_strchr(char *s, int c)
 {
-	while (*s)
-	{
-		if (*s == c)
-			return s;
-		s++;
-	}
-	return NULL;
+	int i = 0;
+	while(s[i] != c)
+		i++;
+	if (s[i] == c)
+		return s + i;
+	else
+		return NULL;
 }
 
 void *ft_memcpy(void *dest, const void *src, size_t n)
 {
-	while (n-- > 0)
+	while (--n > 0)
 		((char *)dest)[n - 1] = ((char *)src)[n - 1];
 	return dest;
 }
@@ -31,11 +31,7 @@ size_t ft_strlen(char *s)
 
 int str_append_mem(char **s1, char *s2, size_t size2)
 {
-	size_t size1;
-	if(!(*s1))
-		size1 = 0;
-	else
-		size1 = ft_strlen(*s1);
+	size_t size1 = ft_strlen(*s1);
 	char *tmp = malloc(size2 + size1 + 1);
 	if (!tmp)
 		return 0;
@@ -52,7 +48,7 @@ int	str_append_str(char **s1, char *s2)
 	return str_append_mem(s1, s2, ft_strlen(s2));
 }
 
-void	*ft_memmove(void *dest, const void *src, size_t n)
+void	ft_memmove(void *dest, const void *src, size_t n)
 {
 	if (dest > src)
 		return ft_memcpy(dest, src, n);
@@ -75,15 +71,12 @@ char	*get_next_line(int fd)
 	char *tmp = ft_strchr(b, '\n');
 	while (!tmp)
 	{
-		//if (!str_append_str(&ret, b))
-		//	return NULL;
+		if (!str_append_str(&ret, b))
+			return NULL;
 		int read_ret = read(fd, b, BUFFER_SIZE);
 		if (read_ret == -1)
 			return NULL;
 		b[read_ret] = 0;
-		printf("buffer: %s\n", b);
-		tmp = ft_strchr(b, '\n');
-		printf("tmp: %s\n", tmp);
 	}
 	if (!str_append_mem(&ret, b, tmp - b + 1))
 	{
@@ -93,6 +86,7 @@ char	*get_next_line(int fd)
 	return ret;
 }
 
+/* NOT INCLUDED IN EXAM
 int main(void)
 {
     // Test with normal file
@@ -111,3 +105,4 @@ int main(void)
     }
     close(fd);
 }
+*/

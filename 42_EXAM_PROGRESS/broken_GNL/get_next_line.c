@@ -2,9 +2,9 @@
 
 char *ft_strchr(char *s, int c)
 {
-	while (*s)
+	while(*s)
 	{
-		if (*s == c)
+		if(*s == c)
 			return s;
 		s++;
 	}
@@ -13,8 +13,12 @@ char *ft_strchr(char *s, int c)
 
 void *ft_memcpy(void *dest, const void *src, size_t n)
 {
-	while (n-- > 0)
-		((char *)dest)[n - 1] = ((char *)src)[n - 1];
+	size_t i = 0;
+	while (i < n)
+	{
+		((char *)dest)[i] = ((char *)src)[i];
+		i++;
+	}
 	return dest;
 }
 
@@ -32,10 +36,10 @@ size_t ft_strlen(char *s)
 int str_append_mem(char **s1, char *s2, size_t size2)
 {
 	size_t size1;
-	if(!(*s1))
-		size1 = 0;
-	else
+	if(*s1)
 		size1 = ft_strlen(*s1);
+	else
+		size1 = 0;
 	char *tmp = malloc(size2 + size1 + 1);
 	if (!tmp)
 		return 0;
@@ -54,15 +58,14 @@ int	str_append_str(char **s1, char *s2)
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	if (dest > src)
+	if (dest < src)
 		return ft_memcpy(dest, src, n);
 	else if (dest == src)
 		return dest;
-	size_t i = ft_strlen((char * )src) - 1;
-	while (i >= 0)
+	else if (dest > src)
 	{
-		((char *)dest)[i] = ((char *)src)[i];
-		i--;
+		while (n--)
+			((unsigned char *)dest)[n] = ((unsigned char *)src)[n];
 	}
 	return dest;
 }
@@ -75,39 +78,50 @@ char	*get_next_line(int fd)
 	char *tmp = ft_strchr(b, '\n');
 	while (!tmp)
 	{
-		//if (!str_append_str(&ret, b))
-		//	return NULL;
+		if (!str_append_str(&ret, b))
+			return NULL;
 		int read_ret = read(fd, b, BUFFER_SIZE);
 		if (read_ret == -1)
+		{	
+			free(ret);
 			return NULL;
+		}
 		b[read_ret] = 0;
-		printf("buffer: %s\n", b);
+		if (read_ret == 0)
+		{
+			if(ret && *ret)
+			{
+				return ret;
+			}
+			free(ret);
+			return NULL;
+		}
 		tmp = ft_strchr(b, '\n');
-		printf("tmp: %s\n", tmp);
 	}
 	if (!str_append_mem(&ret, b, tmp - b + 1))
 	{
 		free(ret);
 		return NULL;
 	}
+	ft_memmove(b, tmp + 1, ft_strlen(tmp + 1) + 1);
 	return ret;
 }
 
-int main(void)
-{
-    // Test with normal file
-    int fd = open("test.txt", O_RDONLY);
-    if (fd == -1)
-    {
-        printf("Error opening file\n");
-        return 1;
-    }
+// int main(void)
+// {
+//     // Test with normal file
+//     int fd = open("test.txt", O_RDONLY);
+//     if (fd == -1)
+//     {
+//         printf("Error opening file\n");
+//         return 1;
+//     }
 
-    char *line;
-    while ((line = get_next_line(fd)))
-    {
-        printf("%s", line);
-        free(line);
-    }
-    close(fd);
-}
+//     char *line;
+//     while ((line = get_next_line(fd)))
+//     {
+//         printf("%s", line);
+//         free(line);
+//     }
+//     close(fd);
+// }

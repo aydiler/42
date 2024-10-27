@@ -5,7 +5,9 @@ char *ft_strchr(char *s, int c)
 	while(*s)
 	{
 		if(*s == c)
+		{
 			return s;
+		}
 		s++;
 	}
 	return NULL;
@@ -36,10 +38,10 @@ size_t ft_strlen(char *s)
 int str_append_mem(char **s1, char *s2, size_t size2)
 {
 	size_t size1;
-	if(*s1)
-		size1 = ft_strlen(*s1);
-	else
+	if(!(*s1))
 		size1 = 0;
+	else
+		size1 = ft_strlen(*s1);
 	char *tmp = malloc(size2 + size1 + 1);
 	if (!tmp)
 		return 0;
@@ -62,13 +64,15 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 		return ft_memcpy(dest, src, n);
 	else if (dest == src)
 		return dest;
-	else if (dest > src)
+	while (n > 0)
 	{
-		while (n--)
-			((unsigned char *)dest)[n] = ((unsigned char *)src)[n];
+		n--;
+		((char *)dest)[n] = ((char *)src)[n];
 	}
 	return dest;
 }
+
+#define BUFFER_SIZE 10
 
 char	*get_next_line(int fd)
 {
@@ -82,17 +86,15 @@ char	*get_next_line(int fd)
 			return NULL;
 		int read_ret = read(fd, b, BUFFER_SIZE);
 		if (read_ret == -1)
-		{	
+		{
 			free(ret);
 			return NULL;
 		}
 		b[read_ret] = 0;
 		if (read_ret == 0)
 		{
-			if(ret && *ret)
-			{
+			if (ret && *ret)
 				return ret;
-			}
 			free(ret);
 			return NULL;
 		}
@@ -107,21 +109,21 @@ char	*get_next_line(int fd)
 	return ret;
 }
 
-// int main(void)
-// {
-//     // Test with normal file
-//     int fd = open("test.txt", O_RDONLY);
-//     if (fd == -1)
-//     {
-//         printf("Error opening file\n");
-//         return 1;
-//     }
+int main(void)
+{
+    // Test with normal file
+    int fd = open("test.txt", O_RDONLY);
+    if (fd == -1)
+    {
+        printf("Error opening file\n");
+        return 1;
+    }
 
-//     char *line;
-//     while ((line = get_next_line(fd)))
-//     {
-//         printf("%s", line);
-//         free(line);
-//     }
-//     close(fd);
-// }
+    char *line;
+    while ((line = get_next_line(fd)))
+    {
+        printf("%s", line);
+        free(line);
+    }
+    close(fd);
+}

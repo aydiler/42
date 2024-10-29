@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		ssize_t i = 0;
 		if (bytes_read < target_length)
 		{
-			i = bytes_read;
+			write(1, &buffer[i], bytes_read);
 		}
 		else
 		{
@@ -44,9 +44,6 @@ int main(int argc, char *argv[])
 					i++;
 				}
 			}
-		}
-		if (i < bytes_read)
-		{
 			write(1, &buffer[i], bytes_read - i);
 		}
 	}

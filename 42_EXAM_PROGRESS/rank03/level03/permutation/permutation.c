@@ -65,21 +65,13 @@ int next_permutation(char *s)
 int main(int argc, char **argv)
 {
     if(argc != 2)
-        return 1; // Vérifie qu'il y a exactement un argument
+        return 1;
 
     size_t len = strlen(argv[1]);
     if(len == 0)
-        return 0; // Chaîne vide, rien à afficher
+        return 0;
 
-    // Alloue de la mémoire pour copier la chaîne
-    char *buffer = (char *)malloc(len + 1);
-    if(!buffer)
-        return 1; // Échec de l'allocation
-
-    // Copier la chaîne d'entrée dans le buffer
-    for(size_t i = 0; i < len; i++)
-        buffer[i] = argv[1][i];
-    buffer[len] = '\0'; // Termine la chaîne
+    char *buffer = argv[1]; // Chaîne à permuter
 
     sort_string(buffer); // Trie la chaîne pour commencer par la première permutation lexicographique
     puts(buffer);        // Affiche la première permutation
@@ -88,6 +80,5 @@ int main(int argc, char **argv)
     while(next_permutation(buffer))
         puts(buffer);
 
-    free(buffer); // Libère la mémoire allouée
     return 0;
 }

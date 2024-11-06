@@ -1,0 +1,19 @@
+Write a program that will take as a argument a string containing only patenthesis.
+If the paranthesis are unbalanced (for example "())") you rprogram shall remove the minimum number or parenthesis for the expression to be balanced.
+By removing we mean replacing by spaces.
+You will then print all the solutions (can be more then one).
+
+The order of the solution is not important.
+
+For example this should work:
+./rip "(()" | cat -e
+ ()$
+( )$
+
+./rip "()"
+()
+
+./rip "()())()"
+()() ()
+()( )()
+( ())()

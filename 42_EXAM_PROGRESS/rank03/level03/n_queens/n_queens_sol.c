@@ -6,35 +6,48 @@ int pos[20];
 
 int is_safe(int col, int row)
 {
-    for(int i = 0; i < col; i++)
-	{
+    int i = 0;
+    while(i < col)
+    {
         if(pos[i] == row || pos[i] - row == i - col || row - pos[i] == i - col)
             return 0;
+        i++;
     }
     return 1;
 }
 
-void solve(int col) {
+void solve(int col)
+{
     if(col == n)
-	{
-        for(int i = 0; i < n; i++)
-            printf("%d%c", pos[i], (i == n-1) ? '\n' : ' ');
+    {
+        int i = 0;
+        while(i < n)
+        {
+            printf("%d", pos[i]);
+            if(i < n - 1)
+                printf(" ");
+            else
+                printf("\n");
+            i++;
+        }
         return;
     }
-    for(int row = 0; row < n; row++)
-	{
+    int row = 0;
+    while(row < n)
+    {
         if(is_safe(col, row))
-	{
+        {
             pos[col] = row;
             solve(col + 1);
         }
+        row++;
     }
 }
 
 int main(int argc, char **argv)
 {
     if(argc == 2)
-	{
+    {
         n = atoi(argv[1]);
         solve(0);
     }

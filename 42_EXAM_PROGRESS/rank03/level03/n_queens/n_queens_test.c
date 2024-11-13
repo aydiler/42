@@ -1,51 +1,39 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int n;
 int pos[20];
 
 int is_safe(int row, int col)
 {
-	int i = 0;
-	while(i < col)
+	for(int i = 0; i < col; i++)
 	{
 		if(pos[i] == row || pos[i] - row == i - col || row - pos[i] == i - col)
 			return 0;
-		i++;
 	}
 	return 1;
-}
-
-void print()
-{
-	int i = 0;
-	while (i < n)
-	{
-		printf("%d", pos[i]);
-		if(i < n - 1)
-			printf(" ");
-		else
-			printf("\n");
-		i++;
-	}
 }
 
 void solve(int col)
 {
 	if(col == n)
 	{
-		print();
-		return ;
+		for(int i = 0; i < n; i++)
+		{
+			printf("%d", pos[i]);
+			if(i < n - 1)
+				printf(" ");
+		}
+		printf("\n");
 	}
-	int row = 0;
-	while (row < n)
+	for(int row = 0; row < n; row++)
 	{
 		if(is_safe(row, col))
 		{
 			pos[col] = row;
 			solve(col + 1);
 		}
-		row++;
 	}
 }
 

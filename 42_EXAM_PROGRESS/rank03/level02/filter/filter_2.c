@@ -7,6 +7,7 @@
 int main (int ac, char **av)
 {
 	if (ac != 2) return 1;
+
 	char *needle = av[1];
 	size_t needle_len = strlen(needle);
 	if (needle_len == 0) return 1;
@@ -35,6 +36,7 @@ int main (int ac, char **av)
 		free(input_buf);
 		return 1;
 	}
+	
 	char *current_pos = input_buf;
 	size_t remaining = total;
 	while ((current_pos = memmem(current_pos, remaining, needle, needle_len)) != NULL)

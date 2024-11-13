@@ -2,7 +2,6 @@
 #include <string.h> // Pour strlen
 #include <stdio.h>  // Pour puts
 
-/* Fonction pour échanger deux caractères */
 void swap(char *a, char *b)
 {
     char tmp = *a;
@@ -10,7 +9,6 @@ void swap(char *a, char *b)
     *b = tmp;
 }
 
-/* Fonction pour trier la chaîne par ordre alphabétique (Bubble Sort) */
 void sort_string(char *s)
 {
     int len = strlen(s);
@@ -24,7 +22,6 @@ void sort_string(char *s)
     }
 }
 
-/* Fonction pour inverser une partie de la chaîne */
 void reverse(char *s, int start, int end)
 {
     while(start < end)
@@ -35,31 +32,30 @@ void reverse(char *s, int start, int end)
     }
 }
 
-/* Fonction pour générer la prochaine permutation lexicographique */
 int next_permutation(char *s)
 {
     int len = strlen(s);
     int i = len - 2;
 
-    // Trouver le premier caractère qui est plus petit que celui qui le suit
+    // Step 1: Find the first character that is smaller than the next one
     while(i >= 0 && s[i] >= s[i+1])
         i--;
 
     if(i < 0)
-        return 0; // Dernière permutation atteinte
+        return 0; // Last permutation reached
 
-    // Trouver le premier caractère à droite de s[i] qui est plus grand que s[i]
+    // Step 2: Find the smallest character on right side that's larger than s[i]
     int j = len - 1;
     while(s[j] <= s[i])
         j--;
 
-    // Échanger s[i] et s[j]
+    // Step 3: Swap these characters
     swap(&s[i], &s[j]);
 
-    // Inverser la séquence après la position i
+    // Step 4: Reverse the sequence after position i
     reverse(s, i+1, len-1);
 
-    return 1; // Permutation suivante générée
+    return 1; // Next permutation generated
 }
 
 int main(int argc, char **argv)
@@ -71,12 +67,11 @@ int main(int argc, char **argv)
     if(len == 0)
         return 0;
 
-    char *buffer = argv[1]; // Chaîne à permuter
+    char *buffer = argv[1];
 
-    sort_string(buffer); // Trie la chaîne pour commencer par la première permutation lexicographique
-    puts(buffer);        // Affiche la première permutation
+    sort_string(buffer);
+    puts(buffer); 
 
-    // Génère et affiche toutes les permutations suivantes
     while(next_permutation(buffer))
         puts(buffer);
 

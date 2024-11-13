@@ -1,0 +1,50 @@
+Example: If we have 15432, the next permutation must be:
+- Larger than 15432
+- The smallest possible number larger than 15432 that uses these same digits
+
+
+STEP 1: Finding the Rightmost Smaller Element
+
+To ge the smallest possible number larger than 15432
+- We need to switch one digit with one, that is larger
+- But we want the smallest possible increase
+
+To find the digit to change:
+We have to find the least significant number that that would break the descending order
+
+Example:
+
+1 5 4 3 2
+^
+We need to change this to get the next permutation
+
+
+STEP 2: Finding the Smallest Larger Element on the Right and swap them
+
+For "15432":
+1 5 4 3 2
+^   ^
+Looking for smallest number > 1 in "5432" = 2
+
+15432 -> 25431
+
+
+STEP 4: The Reverse
+
+All numbers after the switched one are still in descending order, but we want them in ascending order after the
+switch, because that would be lexographically correct.
+
+so for 25431 we have to swap the numbers 
+
+25431 -> 21345
+
+
+EDGE CASES:
+
+1. Last permutation (e.g., "54321"):
+   - Step 1 fails (can't find smaller element)
+   - Returns 0 correctly
+
+2. Single character:
+   - Steps are skipped
+   - Returns 0 correctly

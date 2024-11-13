@@ -4,6 +4,7 @@ By removing we mean replacing by spaces.
 You will then print all the solutions (can be more then one).
 
 The order of the solution is not important.
+Allowed function: write, puts
 
 For example this should work:
 ./rip "(()" | cat -e

@@ -1,26 +1,45 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-void powerset(int size, int *current, int curr_size, int start)
+void print_subset(int *numbers, int *pos, int subsize)
 {
-	for(int i = start; i < size; i++)
+	int i = 0;
+	while(i < subsize)
 	{
-		current[curr_size] = i;
-		for(int i = 0; i<=curr_size; i++)
-			printf("%d", current[i]);
-		printf("\n");
-		powerset(size, current, curr_size + 1, i + 1);
+		printf("%d ", numbers[pos[i]]);
+		i++;
 	}
+	printf("\n");
 }
 
-int main()
+void solve(int target, int *numbers, int size, int *pos, int subsize, int start, int sum)
 {
-	int size = 5;
-	int *current = malloc(sizeof(int) * size);
-	if(!current)
-		return 1;
+	if (sum == target && subsize > 0)
+		print_subset(numbers, pos, subsize);
+	int i = start;
+	while (i < size)
+	{
+		pos[subsize] = i;
+		solve(target, numbers, size, pos, subsize + 1, i + 1, sum + numbers[i]);
+		i++;
+	}
+	
+}
 
-	powerset(size, current, 0, 0);
-
-	free(current);
+int main(int argc, char **argv)
+{
+	if (argc < 3)
+		return 0;
+	int target = atoi(argv[1]);
+	int size = argc - 2;
+	int numbers[size];
+	int pos[size];
+	int i = 0;
+	while (i < size)
+	{
+		numbers[i] = atoi(argv[i + 2]);
+		i++;
+	}
+	solve(target, numbers, size, pos, 0, 0, 0);
+	return 0;
 }

@@ -25,6 +25,7 @@ void    find_subsets(int target, int *numbers, int size, int *pos, int sub_size,
         i++;
     }
 }
+
 int main(int argc, char **argv)
 {
     if (argc < 3)

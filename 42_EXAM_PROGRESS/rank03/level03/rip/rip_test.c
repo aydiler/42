@@ -5,62 +5,72 @@
 
 int is_valid(char *str)
 {
-	int balance = 0;
-	for(int i = 0; str[i]; i++)
+	int count = 0;
+	while (*str)
 	{
-		if(str[i] == '(') balance++;
-		if(str[i] == ')') balance--;
-		if(balance < 0)
+		if(*str == '(')
+			count++;
+		if(*str == ')')
+			count--;
+		if(count < 0)
 			return 0;
+		str++;
 	}
-	return balance == 0;
+	//printf("count: %d\n", count);
+	if (count == 0)
+	{
+		//printf("is valid");
+		return 1;
+	}
+	return 0;
 }
 
-void find_solutions(char *str, int pos, int to_remove, char remove_type)
+void rip(char *str, int pos, int open, int close)
 {
-	if(str[pos] == 0 || to_remove == 0)
+	if(str[pos] == '\0')
 	{
 		if(is_valid(str))
 			puts(str);
-		return;
+		return ;
 	}
-	if(str[pos] == remove_type && to_remove > 0)
+	if(str[pos] == '(' && open > 0)
 	{
-		char orig = str[pos];
 		str[pos] = ' ';
-		find_solutions(str, pos + 1, to_remove - 1, remove_type);
-		str[pos] = orig;
+		rip(str, pos + 1, open - 1, close);
+		str[pos] = '(';
 	}
-	find_solutions(str, pos + 1, to_remove, remove_type);
+	if(str[pos] == ')' && close > 0)
+	{
+		str[pos] = ' ';
+		rip(str, pos + 1, open, close - 1);
+		str[pos] = ')';
+	}
+	rip(str, pos+1, open, close);
 }
 
 int main(int argc, char **argv)
 {
-	if(argc != 2)
-		return 1;
-
-	char str[1000];
-	strcpy(str, argv[1]);
-
-	int open = 0, close = 0;
-	for(int i = 0; str[i]; i++)
+	int open, close;
+	open = 0;
+	close = 0;
+	if (argc != 2)
+		return 0;
+	char *str = argv[1];
+	int i = 0;
+	while (str[i])
 	{
-		if(str[i] == '(') open++;
-		if(str[i] == ')') close++;
+		if(str[i] == '(')
+			open++;
+		if(str[i] == ')')
+		{
+			if (open > 0)
+				open--;
+			else
+				close++;
+		}
+		i++;
 	}
-	int to_remove;
-	char remove_type;
-	if(open < close)
-	{
-		to_remove = close - open;
-		remove_type = ')';
-	}
-	if(open > close)
-	{
-		to_remove = open - close;
-		remove_type = '(';
-	}
-
-	find_solutions(str, 0, to_remove, remove_type);
+	printf("open: %d, close: %d\n", open, close);
+	rip(str, 0, open, close);
 	return 0;
 }

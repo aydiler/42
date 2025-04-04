@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vbc.c                                              :+:      :+:    :+:   */
+/*   sol4.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cadenegr <neo_dgri@hotmail.com>            +#+  +:+       +#+        */
+/*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:29:49 by cadenegr          #+#    #+#             */
-/*   Updated: 2024/11/06 16:15:23 by cadenegr         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:53:56 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ node	*parse_expr(char **s);
 
 void	unexpected(char **s)
 {
-	if (**s == EOF)
+	if (**s == 0)
 		printf("Wrong end of input\n");
 	else
 		printf("Wrong token %c\n", **s);
@@ -110,16 +110,16 @@ node	*parse_expr(char **s)
 	return ret;
 }
 
-void	destroy_tree(node *n)
+void    destroy_tree(node *n)
 {
-	if (!n)
-		return;
-	if (n->type != VAL)
-	{
-		free(n->l);
-		free(n->r);
-	}
-	free(n);
+    if (!n)
+        return ;
+    if (n->type != VAL)
+    {
+        destroy_tree(n->l);
+        destroy_tree(n->r);
+    }
+    free(n);
 }
 
 int	eval_tree(node *tree)

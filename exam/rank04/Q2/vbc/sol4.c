@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:29:49 by cadenegr          #+#    #+#             */
-/*   Updated: 2025/04/07 17:34:12 by adiler           ###   ########.fr       */
+/*   Updated: 2025/04/07 18:29:20 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ node	*parse_expr(char **s)
 		node	n;
 		n.type = ADD;
 		n.l = ret;
-		n.r = parse_term(s);
+		n.r = parse_expr(s);
 		ret = new_node(n);
 	}
 	return ret;

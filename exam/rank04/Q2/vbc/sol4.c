@@ -6,7 +6,7 @@
 /*   By: adiler <adiler@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:29:49 by cadenegr          #+#    #+#             */
-/*   Updated: 2025/04/04 16:53:56 by adiler           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:34:12 by adiler           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <ctype.h>
 
 typedef struct node
 {
@@ -71,7 +73,7 @@ node	*parse_factor(char **s)
 		expect(s, ')');
 		return (expr);
 	}
-	if (**s > '0' && **s < '9')
+	if (isdigit(**s))
 	{
 		n.type = VAL;
 		n.value = **s - '0';
@@ -85,7 +87,7 @@ node	*parse_factor(char **s)
 node	*parse_term(char **s)
 {
 	node	*left = parse_factor(s);
-	while (accept(s, '*'))
+	if (accept(s, '*'))
 	{
 		node	n;
 		n.type = MULTI;
@@ -99,7 +101,7 @@ node	*parse_term(char **s)
 node	*parse_expr(char **s)
 {
 	node	*ret = parse_term(s);
-	while (accept(s, '+'))
+	if (accept(s, '+'))
 	{
 		node	n;
 		n.type = ADD;

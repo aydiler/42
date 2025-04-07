@@ -47,7 +47,7 @@ void    unexpected(char c)
 
 int accept(char **s, char c)
 {
-    if (**s)
+    if (**s == c)
     {
         (*s)++;
         return (1);
